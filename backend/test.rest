@@ -1,0 +1,67 @@
+
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc1MTEwNjQ5NCwiZXhwIjoxNzUxMzY1Njk0fQ.OoQjzciTvdF3Kzz4vWrkiRhuD0KYY0zAEBCaffQWLmQ
+
+### 📌 Register New User
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "123456"
+}
+
+### 🔐 Login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "123456"
+}
+
+### Get all devices (requires token)
+GET http://localhost:5000/api/devices
+Authorization: {{token}}
+
+
+### Add new device
+POST http://localhost:5000/api/devices
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "Muhammad's Phone",
+  "ip": "192.168.1.11",
+  "type": "Mobile",
+  "status": true,
+  "description": "M32 Android phone",
+  "last_seen": "2025-06-28T08:35:00Z",
+  "place": "Home"
+}
+
+### Get a Device by ID
+GET http://localhost:5000/api/devices/1
+Authorization: {{token}}
+
+### Update a Device by ID
+PUT http://localhost:5000/api/devices/2
+Authorization: {{token}}
+Content-Type: application/json
+
+  {
+    "id": 2,
+    "name": "Muhammad's Laptop",
+    "ip": "192.168.1.5",
+    "type": "Laptop",
+    "status": 1,
+    "description": "Personal Laptop",
+    "last_seen": "2025-06-28T11:35:00Z",
+    "place": "Muhammad's Room",
+    "user_id": 1
+  }
+
+
+### DELETE A DEVICE 
+
+DELETE http://localhost:5000/api/devices/3
+Authorization: {{token}}
