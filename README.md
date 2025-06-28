@@ -79,19 +79,4 @@ npm run dev
 
 ---
 
-## 📂 Folder Structure
-
-monitor/
-├── backend/
-│ ├── controllers/
-│ ├── models/
-│ ├── routes/
-│ ├── middleware/
-│ └── server.js
-├── frontend/
-│ ├── app/
-│ ├── components/
-│ ├── context/
-│ └── public/
-└── README.md
 
