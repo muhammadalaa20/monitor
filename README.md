@@ -32,6 +32,22 @@ A full-stack, cyber-themed web application for real-time device monitoring, buil
 
 ---
 
+## Backend Installation
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+## Frontend Installation
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
 ## 🛠 Tech Stack
 
 ### 🌐 Frontend
@@ -78,3 +94,4 @@ monitor/
 │ ├── context/
 │ └── public/
 └── README.md
+
