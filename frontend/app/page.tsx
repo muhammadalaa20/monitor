@@ -30,7 +30,7 @@ export default function HomePage() {
             muted
             loop
             playsInline
-            className="absolute inset-0 w-full h-full object-cover brightness-[0.7]"
+            className="absolute inset-0 w-full h-full object-cover brightness-[0.5]"
           >
             <source src="/hero1.mp4" type="video/mp4" />
           </video>
