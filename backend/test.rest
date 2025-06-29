@@ -29,15 +29,16 @@ POST http://localhost:5000/api/devices
 Content-Type: application/json
 Authorization: {{token}}
 
-{
-  "name": "Muhammad's Phone",
-  "ip": "192.168.1.11",
-  "type": "Mobile",
-  "status": true,
-  "description": "M32 Android phone",
-  "last_seen": "2025-06-28T08:35:00Z",
-  "place": "Home"
-}
+    {
+      "name": "IT-PC9",
+      "ip": "172.17.20.9",
+      "type": "PC",
+      "status": 1,
+      "description": "IT Room's test PC",
+      "last_seen": "2025-06-28T12:00:00Z",
+      "place": "IT Room",
+      "user_id": 1
+    }
 
 ### Get a Device by ID
 GET http://localhost:5000/api/devices/1
@@ -63,5 +64,5 @@ Content-Type: application/json
 
 ### DELETE A DEVICE 
 
-DELETE http://localhost:5000/api/devices/3
+DELETE http://localhost:5000/api/devices/1
 Authorization: {{token}}
