@@ -1,22 +1,35 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function HomePage() {
   const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
-      toast(`Welcome back, ${user.username}!`, {
-        description: 'Redirecting to your dashboard...',
-      });
-      setTimeout(() => router.push('/dashboard'), 1000);
-    }
+    if (!user) return;
+
+    let redirected = false;
+
+    const redirectToDashboard = () => {
+      if (!redirected) {
+        redirected = true;
+        toast(`Welcome back, ${user.username}!`, {
+          description: "Redirecting to your dashboard...",
+        });
+        setTimeout(() => {
+          router.replace("/dashboard");
+        }, 1000);
+      }
+    };
+
+    const timeout = setTimeout(redirectToDashboard, 300);
+
+    return () => clearTimeout(timeout);
   }, [user, router]);
 
   return (
@@ -51,7 +64,8 @@ export default function HomePage() {
 
             {/* Description */}
             <p className="text-base md:text-lg text-muted-foreground">
-              Monitor your infrastructure in real time with visual insights and cyber-resilient tools.
+              Monitor your infrastructure in real time with visual insights and
+              cyber-resilient tools.
             </p>
 
             {/* Buttons */}
@@ -59,7 +73,7 @@ export default function HomePage() {
               <Button
                 size="lg"
                 className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-black font-semibold shadow-md transition-all duration-300 cursor-pointer"
-                onClick={() => router.push('/login')}
+                onClick={() => router.push("/login")}
               >
                 Login
               </Button>
@@ -67,7 +81,7 @@ export default function HomePage() {
                 size="lg"
                 variant="outline"
                 className="w-full sm:w-auto border-green-400 text-black hover:bg-green-900/20 transition-all duration-300 ease-in-out hover:text-white cursor-pointer"
-                onClick={() => router.push('/signup')}
+                onClick={() => router.push("/signup")}
               >
                 Sign Up
               </Button>
@@ -104,7 +118,8 @@ export default function HomePage() {
 
           {/* Description */}
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Real-time insights. Cyber-resilient performance. Control everything from your pocket.
+            Real-time insights. Cyber-resilient performance. Control everything
+            from your pocket.
           </p>
 
           {/* Action Buttons */}
@@ -112,7 +127,7 @@ export default function HomePage() {
             <Button
               size="lg"
               className="w-full bg-green-500 hover:bg-green-600 text-black font-semibold transition cursor-pointer"
-              onClick={() => router.push('/login')}
+              onClick={() => router.push("/login")}
             >
               Login
             </Button>
@@ -120,7 +135,7 @@ export default function HomePage() {
               size="lg"
               variant="outline"
               className="w-full border-green-500 text-black hover:text-white hover:bg-green-900/30 transition cursor-pointer"
-              onClick={() => router.push('/signup')}
+              onClick={() => router.push("/signup")}
             >
               Sign Up
             </Button>

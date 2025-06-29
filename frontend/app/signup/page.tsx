@@ -10,15 +10,17 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function SignupPage() {
   const router = useRouter();
+  const { user, login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
-      toast.info("You are already logged in");
-      router.replace("/dashboard");
+      toast.info("You are already logged in.");
+      setTimeout(() => {
+        router.replace("/dashboard");
+      }, 1000);
     }
   }, [user, router]);
 
@@ -46,29 +48,15 @@ export default function SignupPage() {
 
       toast.success("Account created! Logging in...");
 
-      // Step 2: Immediately login
-      const loginRes = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-      const loginData = await loginRes.json();
-      if (!loginRes.ok || !loginData.token) {
+      // Step 2: Login using context method
+      const success = await login(username, password);
+      if (success) {
+        setTimeout(() => {
+          router.replace("/dashboard"); // Redirect centralized
+        });
+      } else {
         toast.error("Login after signup failed");
-        return;
       }
-
-      // Step 3: Store in localStorage
-      const authUser = {
-        id: loginData.user.id,
-        username: loginData.user.username,
-        token: loginData.token,
-      };
-
-      localStorage.setItem("auth", JSON.stringify(authUser));
-      localStorage.setItem("token", loginData.token);
-      // Step 4: Redirect to dashboard
-      router.push("/dashboard");
     } catch {
       toast.error("Something went wrong");
     } finally {
@@ -131,7 +119,7 @@ export default function SignupPage() {
           </div>
           <Button
             size="lg"
-            className="w-full bg-white text-black font-semibold hover:bg-gray-200"
+            className="w-full text-black font-semibold bg-green-500 hover:bg-green-600 cursor-pointer transition-all duration-300"
             onClick={handleSignup}
             disabled={loading}
           >

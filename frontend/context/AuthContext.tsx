@@ -1,14 +1,7 @@
-"use client";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+'use client';
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { toast } from 'sonner';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type User = {
   id: number;
@@ -27,32 +20,29 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUserState] = useState<User | null>(null);
-  const router = useRouter();
 
-  // Load from localStorage on mount
+  // Load session on mount
   useEffect(() => {
-    const stored = localStorage.getItem("auth");
+    const stored = localStorage.getItem('auth');
     if (stored) {
       try {
         setUserState(JSON.parse(stored));
       } catch (e) {
-        console.error("Failed to parse stored auth:", e);
-        localStorage.removeItem("auth");
+        console.error('Failed to parse auth session:', e);
+        localStorage.removeItem('auth');
       }
     }
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (username: string, password: string): Promise<boolean> => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
 
-      if (!res.ok) {
-        return false;
-      }
+      if (!res.ok) return false;
 
       const data = await res.json();
 
@@ -64,32 +54,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(authUser);
       toast.success(`Welcome back, ${authUser.username}!`);
-      router.push("/dashboard");
       return true;
-    } catch (e) {
-      toast.error('Login failed' + e);
+    } catch (err) {
+      toast.error('Login failed' + (err instanceof Error ? `: ${err.message}` : ''));
       return false;
     }
   };
 
-  // Save to localStorage when user changes
   const setUser = (user: User | null) => {
     setUserState(user);
     if (user) {
-      localStorage.setItem("auth", JSON.stringify(user));
+      localStorage.setItem('auth', JSON.stringify(user));
     } else {
-      localStorage.removeItem("auth");
+      localStorage.removeItem('auth');
     }
   };
 
   const logout = () => {
     setUser(null);
-    toast.info("Logged out");
-    router.push("/login");
+    toast.info('Logged out');
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, logout, login }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -97,8 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }

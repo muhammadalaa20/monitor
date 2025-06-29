@@ -1,38 +1,49 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import { toast } from 'sonner';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
-  const { login, user } = useAuth(); // Assumes login(email, password) and user in context
+  const { login, user } = useAuth();
   const router = useRouter();
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [hasRedirected, setHasRedirected] = useState(false);
 
-  // Redirect if already logged in
+  // ✅ Centralized redirect only after login
   useEffect(() => {
-    if (user) {
-      router.push('/dashboard');
+    if (user && !hasRedirected) {
+      toast.success(`Welcome back, ${user.username}! Redirecting...`);
+      setHasRedirected(true);
+      setTimeout(() => {
+        router.replace("/dashboard");
+      }, 1000);
     }
-  }, [user, router]);
+  }, [user, router, hasRedirected]);
 
   const handleSubmit = async () => {
+    if (!username || !password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
     try {
       const success = await login(username, password);
-      if (success) {
-        toast.success('Login successful! Redirecting...');
-        setTimeout(() => router.push('/dashboard'), 1000);
-      } else {
-        toast.error('Invalid credentials');
+      if (!success) {
+        toast.error("Invalid credentials");
       }
-    } catch (err ) {
-      toast.error('Login failed. Please try again. ' + (err instanceof Error ? err.message : ''));
+      // ✅ No redirect here — it's handled in useEffect
+    } catch (err) {
+      toast.error(
+        "Login failed. Please try again. " +
+          (err instanceof Error ? err.message : "")
+      );
     }
   };
 
@@ -57,35 +68,41 @@ export default function LoginPage() {
             Welcome Back
           </span>
           <h2 className="text-3xl font-bold">Login to Monitor</h2>
-          <p className="text-sm text-gray-400">Access your dashboard and stay in control.</p>
+          <p className="text-sm text-gray-400">
+            Access your dashboard and stay in control.
+          </p>
         </div>
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor="email" className='mb-2'>Username:</Label>
+            <Label htmlFor="email" className="mb-2">
+              Username:
+            </Label>
             <Input
               id="username"
-              type="username"
+              type="text"
               placeholder="username"
               value={username}
-              onChange={e => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               className="bg-[#1a1a1a] border-gray-700 text-white"
             />
           </div>
           <div>
-            <Label htmlFor="password" className='mb-2'>Password:</Label>
+            <Label htmlFor="password" className="mb-2">
+              Password:
+            </Label>
             <Input
               id="password"
               type="password"
               placeholder="••••••••"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               className="bg-[#1a1a1a] border-gray-700 text-white"
             />
           </div>
           <Button
             size="lg"
-            className="w-full bg-white text-black font-semibold hover:bg-gray-200"
+            className="w-full  text-black font-semibold bg-green-500 hover:bg-green-600 cursor-pointer transition-all duration-300"
             onClick={handleSubmit}
           >
             Login
@@ -93,9 +110,9 @@ export default function LoginPage() {
         </div>
 
         <div className="text-center text-sm text-gray-400">
-          Don&apos;t have an account?{' '}
+          Don&apos;t have an account?{" "}
           <button
-            onClick={() => router.push('/signup')}
+            onClick={() => router.push("/signup")}
             className="text-white underline hover:text-gray-300"
           >
             Sign Up

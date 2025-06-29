@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface Props {
   children: React.ReactNode;
@@ -12,16 +12,24 @@ interface Props {
 export default function ProtectedRoute({ children }: Props) {
   const { user } = useAuth();
   const router = useRouter();
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      toast.error('Please login to continue.');
-      router.push('/');
-    }
+    const timeout = setTimeout(() => {
+      if (!user) {
+        toast.error("Please login to continue.");
+        setTimeout(() => {
+          router.replace("/");
+        }, 1000);
+      }
+      setIsChecking(false);
+    }, 100);
+
+    return () => clearTimeout(timeout);
   }, [user, router]);
 
-  if (!user) {
-    return null; // prevent rendering until redirection
+  if (!user || isChecking) {
+    return null;
   }
 
   return <>{children}</>;
