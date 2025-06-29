@@ -33,7 +33,7 @@ export async function startPingScheduler(intervalMs = 1000) {
       `, [device.id]);
         }
 
-        // console.log(`${device.ip} → ${isOnline ? '🟢 Online' : '🔴 Offline'}`);
+        console.log(`${device.ip} → ${isOnline ? '🟢 Online' : '🔴 Offline'}`);
       } catch (err) {
         console.error(`❌ Failed to ping ${device.ip}`, err);
       }
