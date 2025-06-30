@@ -30,14 +30,14 @@ Content-Type: application/json
 Authorization: {{token}}
 
     {
-      "name": "Specialists-PC2",
-      "ip": "172.17.20.5",
-      "type": "PC",
-      "status": 1,
-      "description": "Specialists's PC2",
-      "last_seen": "2025-06-28T12:00:00Z",
-      "place": "Specialists Room",
-      "user_id": 1
+    "name": "Muhammad's Router",
+    "ip": "192.168.1.1",
+    "type": "Router",
+    "status": 1,
+    "description": "Home Router",
+    "last_seen": "2025-06-28T11:35:00Z",
+    "place": "Muhammad's Room",
+    "user_id": 1
     }
 
 ### Get a Device by ID
@@ -64,5 +64,5 @@ Content-Type: application/json
 
 ### DELETE A DEVICE 
 
-DELETE http://localhost:5000/api/devices/14
+DELETE http://localhost:5000/api/devices/16
 Authorization: {{token}}

@@ -23,12 +23,11 @@ export function LogoutButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          size="icon"
-          className="border border-red-600 text-red-400 hover:bg-red-800/20 transition hover:scale-105 active:scale-95 cursor-pointer"
+        <div
+          className="p-2 border rounded-md border-red-600 text-red-400 hover:bg-red-800/20 transition hover:scale-105 active:scale-95 cursor-pointer"
         >
           <LucideLogOut className="w-5 h-5" />
-        </Button>
+        </div>
       </DialogTrigger>
 
       <DialogContent className="bg-[#111] border border-gray-700 text-white">

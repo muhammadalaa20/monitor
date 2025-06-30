@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Bar, Pie } from "react-chartjs-2";
@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import "chart.js/auto";
 import { AddDeviceModal } from "@/components/AddDeviceModal";
 import { LogoutButton } from "@/components/Logout";
+import { LucideRefreshCcw } from "lucide-react";
 
 function formatSeconds(seconds: number): string {
   const h = Math.floor(seconds / 3600);
@@ -56,29 +57,35 @@ export default function DashboardPage() {
     if (!user?.token) router.replace("/login");
   }, [user?.token, user, router]);
 
-  useEffect(() => {
-    const fetchDevices = async () => {
-      if (!user?.token) return;
+  const fetchDevices = useCallback(async () => {
+    if (!user?.token) return;
 
-      try {
-        const res = await fetch("http://localhost:5000/api/devices", {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        if (!res.ok) throw new Error("Unauthorized");
-        const data = await res.json();
-        setDevices(Array.isArray(data) ? data : []);
-      } catch (err) {
-        toast.error("Failed to fetch devices.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDevices();
+    try {
+      const res = await fetch("http://localhost:5000/api/devices", {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      if (!res.ok) throw new Error("Unauthorized");
+      const data = await res.json();
+      setDevices(Array.isArray(data) ? data : []);
+    } catch (err) {
+      toast.error("Failed to fetch devices.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }, [user?.token]);
+
+  useEffect(() => {
+    if (!user?.token) return;
+
+    fetchDevices(); // initial fetch
+
+    const interval = setInterval(fetchDevices, 3000); // auto-refresh every 30s
+
+    return () => clearInterval(interval); // cleanup
+  }, [user?.token, fetchDevices]);
 
   const totalDevices = devices.length;
   const onlineDevices = devices.filter((d) => d.status === 1).length;
@@ -151,6 +158,13 @@ export default function DashboardPage() {
               <p className="text-md hidden sm:block">
                 Welcome, <span className="font-semibold text-green-400">{user?.username}</span>
               </p>
+              {/* Refresh Button */}
+              <div
+                onClick={fetchDevices}
+                className="p-2 rounded-md border border-green-500 hover:bg-green-900/20 transition hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                <LucideRefreshCcw className="w-5 h-5 text-green-400" />
+              </div>
               {/* Add Device Modal */}
               <AddDeviceModal onDeviceAdded={refetchDevices} />
               {/* Toggle Sidebar */}
