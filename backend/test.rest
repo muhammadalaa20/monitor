@@ -30,13 +30,13 @@ Content-Type: application/json
 Authorization: {{token}}
 
     {
-      "name": "IT-ENG8",
-      "ip": "172.17.20.8",
+      "name": "Specialists-PC2",
+      "ip": "172.17.20.5",
       "type": "PC",
       "status": 1,
-      "description": "Mohsen's PC",
+      "description": "Specialists's PC2",
       "last_seen": "2025-06-28T12:00:00Z",
-      "place": "IT Room",
+      "place": "Specialists Room",
       "user_id": 1
     }
 
