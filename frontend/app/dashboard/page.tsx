@@ -147,6 +147,10 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <Logo />
             <div className="flex items-center gap-2">
+              {/* Welcome Message */}
+              <p className="text-md hidden sm:block">
+                Welcome, <span className="font-semibold text-green-400">{user?.username}</span>
+              </p>
               {/* Add Device Modal */}
               <AddDeviceModal onDeviceAdded={refetchDevices} />
               {/* Toggle Sidebar */}

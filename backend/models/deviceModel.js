@@ -1,10 +1,9 @@
 // Device model
 
 // Get all devices
-export async function getAllDevices(db, userId) {
+export async function getAllDevices(db) {
   return await db.all(
-    `SELECT * FROM devices WHERE user_id = ? ORDER BY id DESC`,
-    [userId]
+    `SELECT * FROM devices`,
   );
 }
 
