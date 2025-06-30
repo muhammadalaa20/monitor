@@ -64,5 +64,5 @@ Content-Type: application/json
 
 ### DELETE A DEVICE 
 
-DELETE http://localhost:5000/api/devices/1
+DELETE http://localhost:5000/api/devices/14
 Authorization: {{token}}

@@ -18,14 +18,12 @@ export default function LoginPage() {
 
   // ✅ Centralized redirect only after login
   useEffect(() => {
-    if (user && !hasRedirected) {
-      toast.success(`Welcome back, ${user.username}! Redirecting...`);
+    if (user?.token && !hasRedirected) {
       setHasRedirected(true);
-      setTimeout(() => {
-        router.replace("/dashboard");
-      }, 1000);
+      toast.success(`Welcome back, ${user.username}! Redirecting...`);
+      setTimeout(() => router.replace("/dashboard"), 800);
     }
-  }, [user, router, hasRedirected]);
+  }, [user?.token, router, hasRedirected, user?.username]);
 
   const handleSubmit = async () => {
     if (!username || !password) {

@@ -1,7 +1,13 @@
 'use client';
 
 import { toast } from 'sonner';
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 
 type User = {
   id: number;
@@ -21,7 +27,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUserState] = useState<User | null>(null);
 
-  // Load session on mount
+  // 🔹 Load user from localStorage on initial mount
   useEffect(() => {
     const stored = localStorage.getItem('auth');
     if (stored) {
@@ -34,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // 🔹 Login logic
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
       const res = await fetch('http://localhost:5000/api/auth/login', {
@@ -61,6 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // 🔹 Set user and persist in localStorage
   const setUser = (user: User | null) => {
     setUserState(user);
     if (user) {
@@ -70,8 +78,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // 🔹 Logout logic
   const logout = () => {
-    setUser(null);
+    setUser(null); // clears localStorage and resets user
     toast.info('Logged out');
   };
 
@@ -82,6 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// 🔹 Custom hook to consume the auth context
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {

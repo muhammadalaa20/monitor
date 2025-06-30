@@ -26,13 +26,14 @@ export async function createDevice(db, device) {
     description,
     last_seen,
     place,
-    user_id
+    user_id,
+    uptime_seconds = 0
   } = device;
 
   const result = await db.run(
-    `INSERT INTO devices (name, ip, type, status, description, last_seen, place, user_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [name, ip, type, status, description, last_seen, place, user_id]
+    `INSERT INTO devices (name, ip, type, status, description, last_seen, place, uptime_seconds, user_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [name, ip, type, status, description, last_seen, place, uptime_seconds, user_id]
   );
 
   return { id: result.lastID, ...device };

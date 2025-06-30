@@ -33,16 +33,49 @@ export async function fetchDeviceById(req, res) {
 export async function addDevice(req, res) {
   try {
     const db = await initDb();
+
+    // Ensure user is attached (from auth middleware)
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Unauthorized: missing user" });
+    }
+
+    const {
+      name,
+      ip,
+      type,
+      status = 0,
+      description = "",
+      last_seen,
+      place = "",
+      uptime_seconds = 0,
+    } = req.body;
+
+    // Basic validation
+    if (!name || !ip || !last_seen) {
+      return res.status(400).json({ error: "Missing required fields (name, ip, last_seen)" });
+    }
+
     const deviceData = {
-      ...req.body,
-      user_id: req.user.id
+      name,
+      ip,
+      type,
+      status,
+      description,
+      last_seen,
+      place,
+      uptime_seconds,
+      user_id: req.user.id,
     };
+
     const device = await createDevice(db, deviceData);
     res.status(201).json(device);
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Add Device Error:", err); // 👈 Helps you debug real cause
+    res.status(500).json({ error: "Internal Server Error: " + err.message });
   }
 }
+
 
 export async function editDevice(req, res) {
   try {
