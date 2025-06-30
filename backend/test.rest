@@ -30,11 +30,11 @@ Content-Type: application/json
 Authorization: {{token}}
 
     {
-      "name": "IT-PC9",
-      "ip": "172.17.20.9",
+      "name": "IT-ENG8",
+      "ip": "172.17.20.8",
       "type": "PC",
       "status": 1,
-      "description": "IT Room's test PC",
+      "description": "Mohsen's PC",
       "last_seen": "2025-06-28T12:00:00Z",
       "place": "IT Room",
       "user_id": 1
