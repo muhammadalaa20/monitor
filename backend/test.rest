@@ -1,5 +1,5 @@
 
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc1MTEwNjQ5NCwiZXhwIjoxNzUxMzY1Njk0fQ.OoQjzciTvdF3Kzz4vWrkiRhuD0KYY0zAEBCaffQWLmQ
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc1MTM3MDQ5NiwiZXhwIjoxNzUxNjI5Njk2fQ.Nz6cE6bOsDHyDxkuUb5BPfTropMi1DcwQpBTA1YMe4k
 
 ### 📌 Register New User
 POST http://localhost:5000/api/auth/register
@@ -41,7 +41,7 @@ Authorization: {{token}}
     }
 
 ### Get a Device by ID
-GET http://localhost:5000/api/devices/1
+GET http://localhost:5000/api/devices/21
 Authorization: {{token}}
 
 ### Update a Device by ID

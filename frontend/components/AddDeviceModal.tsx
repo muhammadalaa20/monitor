@@ -149,10 +149,10 @@ export function AddDeviceModal({ onDeviceAdded }: AddDeviceModalProps) {
           <div className="grid gap-2">
             <Label htmlFor="type">Device Type *</Label>
             <Select value={type} onValueChange={setType}>
-              <SelectTrigger className="bg-[#1a1a1a] border-gray-700 text-white">
+              <SelectTrigger className="bg-[#1a1a1a] border-gray-700 text-white w-full">
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
-              <SelectContent className="bg-[#1a1a1a] border-gray-700 text-white">
+              <SelectContent className="bg-[#1a1a1a] border-gray-700 text-white ">
                 <SelectItem value="PC">PC</SelectItem>
                 <SelectItem value="Server">Server</SelectItem>
                 <SelectItem value="Gateway">Gateway</SelectItem>
@@ -168,7 +168,7 @@ export function AddDeviceModal({ onDeviceAdded }: AddDeviceModalProps) {
           <div className="grid gap-2">
             <Label htmlFor="place">Location/Place *</Label>
             <Select value={place} onValueChange={setPlace}>
-              <SelectTrigger className="bg-[#1a1a1a] border-gray-700 text-white">
+              <SelectTrigger className="bg-[#1a1a1a] border-gray-700 text-white w-full">
                 <SelectValue placeholder="Select location" />
               </SelectTrigger>
               <SelectContent className="bg-[#1a1a1a] border-gray-700 text-white">

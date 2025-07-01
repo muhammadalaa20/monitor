@@ -12,7 +12,7 @@ import { initDb } from '../db/index.js';
 export async function fetchDevices(req, res) {
   try {
     const db = await initDb();
-    const devices = await getAllDevices(db, req.user.id);
+    const devices = await getAllDevices(db);
     res.json(devices);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch devices.' });
@@ -22,7 +22,7 @@ export async function fetchDevices(req, res) {
 export async function fetchDeviceById(req, res) {
   try {
     const db = await initDb();
-    const device = await getDeviceById(db, req.params.id, req.user.id);
+    const device = await getDeviceById(db, req.params.id);
     if (!device) return res.status(404).json({ error: 'Device not found.' });
     res.json(device);
   } catch (err) {

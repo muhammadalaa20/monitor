@@ -3,15 +3,15 @@
 // Get all devices
 export async function getAllDevices(db) {
   return await db.all(
-    `SELECT * FROM devices`,
+    `SELECT * FROM devices ORDER BY id DESC`,
   );
 }
 
 // Get device by id
-export async function getDeviceById(db, id, userId) {
+export async function getDeviceById(db, id) {
   return await db.get(
-    `SELECT * FROM devices WHERE id = ? AND user_id = ?`,
-    [id, userId]
+    `SELECT * FROM devices WHERE id = ?`,
+    [id]
   );
 }
 

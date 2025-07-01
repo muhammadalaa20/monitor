@@ -32,7 +32,7 @@ function formatSeconds(seconds: number): string {
   return `${h}h ${m}m ${s}s`;
 }
 
-interface Device {
+export interface Device {
   id: number;
   name: string;
   type: string;
@@ -166,7 +166,7 @@ export default function DashboardPage() {
 
       {/* 🔹 Layout */}
       <div className="relative z-10 flex min-h-screen">
-        <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} devices={devices} />
 
         <div className="flex-1 px-4 py-6 sm:px-6 space-y-6">
           {/* 🔹 Topbar */}
@@ -359,7 +359,7 @@ export default function DashboardPage() {
               )}
             </StatCard>
             <StatCard
-              title="Least Active Device"
+              title="Last Offline Device"
               icon={<LucideTurtle className="w-5 h-5 text-yellow-400" />}
             >
               {leastActiveDevice ? (
