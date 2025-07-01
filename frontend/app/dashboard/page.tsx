@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Bar, Pie } from "react-chartjs-2";
@@ -42,6 +42,7 @@ export interface Device {
 }
 
 export default function DashboardPage() {
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [devices, setDevices] = useState<Device[]>([]);
@@ -50,16 +51,16 @@ export default function DashboardPage() {
   const lastDevice = [...devices].sort((a, b) => b.id - a.id)[0];
   const mostActiveDevice = devices.length
     ? devices.reduce((prev, curr) =>
-        (curr.uptime_seconds || 0) > (prev.uptime_seconds || 0) ? curr : prev
-      )
+      (curr.uptime_seconds || 0) > (prev.uptime_seconds || 0) ? curr : prev
+    )
     : null;
 
   const leastActiveDevice = devices.length
     ? devices.reduce((prev, curr) =>
-        (curr.uptime_seconds ?? Infinity) < (prev.uptime_seconds ?? Infinity)
-          ? curr
-          : prev
-      )
+      (curr.uptime_seconds ?? Infinity) < (prev.uptime_seconds ?? Infinity)
+        ? curr
+        : prev
+    )
     : null;
 
   useEffect(() => {
@@ -106,6 +107,27 @@ export default function DashboardPage() {
     return () => clearInterval(interval); // cleanup
   }, [user?.token, fetchDevices]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
+        setSidebarOpen(false);
+      }
+    };
+
+    if (sidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [sidebarOpen]);
+
   const totalDevices = devices.length;
   const onlineDevices = devices.filter((d) => d.status === 1).length;
   const offlineDevices = totalDevices - onlineDevices;
@@ -151,6 +173,7 @@ export default function DashboardPage() {
   };
 
   return (
+
     <main className="relative min-h-screen w-full bg-black text-white overflow-hidden">
       {/* 🔹 Video Background */}
       <video
@@ -166,8 +189,9 @@ export default function DashboardPage() {
 
       {/* 🔹 Layout */}
       <div className="relative z-10 flex min-h-screen">
-        <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} devices={devices} />
-
+        <div ref={sidebarRef}>
+          <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} devices={devices} />
+        </div>
         <div className="flex-1 px-4 py-6 sm:px-6 space-y-6">
           {/* 🔹 Topbar */}
           <div className="flex items-center justify-between">
@@ -225,7 +249,10 @@ export default function DashboardPage() {
               <LogoutButton />
             </div>
           </div>
-
+          {/* Overlay */}
+          {sidebarOpen && (
+            <div className="fixed inset-0 min-h-screen z-30 backdrop-blur-sm bg-black/40 transition duration-300" />
+          )}
           {/* 🔹 Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
@@ -271,9 +298,8 @@ export default function DashboardPage() {
                       <span className="font-semibold text-white">Status:</span>{" "}
                       <span className="inline-flex items-center gap-1">
                         <motion.span
-                          className={`w-2.5 h-2.5 rounded-full ${
-                            lastDevice.status ? "bg-green-400" : "bg-red-400"
-                          }`}
+                          className={`w-2.5 h-2.5 rounded-full ${lastDevice.status ? "bg-green-400" : "bg-red-400"
+                            }`}
                           animate={{
                             scale: [1, 1.4, 1],
                             opacity: [1, 0.6, 1],
@@ -325,11 +351,10 @@ export default function DashboardPage() {
                       <span className="font-semibold text-white">Status:</span>{" "}
                       <span className="inline-flex items-center gap-1">
                         <motion.span
-                          className={`w-2.5 h-2.5 rounded-full ${
-                            mostActiveDevice.status
-                              ? "bg-green-400"
-                              : "bg-red-400"
-                          }`}
+                          className={`w-2.5 h-2.5 rounded-full ${mostActiveDevice.status
+                            ? "bg-green-400"
+                            : "bg-red-400"
+                            }`}
                           animate={{
                             scale: [1, 1.4, 1],
                             opacity: [1, 0.6, 1],
@@ -381,9 +406,8 @@ export default function DashboardPage() {
                       <span className="font-semibold text-white">Status:</span>{" "}
                       <span className="inline-flex items-center gap-1">
                         <motion.span
-                          className={`w-2.5 h-2.5 rounded-full ${
-                            leastActiveDevice.status ? "bg-green-400" : "bg-red-400"
-                          }`}
+                          className={`w-2.5 h-2.5 rounded-full ${leastActiveDevice.status ? "bg-green-400" : "bg-red-400"
+                            }`}
                           animate={{
                             scale: [1, 1.4, 1],
                             opacity: [1, 0.6, 1],

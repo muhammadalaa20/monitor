@@ -34,11 +34,11 @@ export function Sidebar({ open, onClose, devices }: SidebarProps) {
       animate={{ x: 0 }}
       exit={{ x: -250 }}
       transition={{ duration: 0.3 }}
-      className="fixed top-0 left-0 h-full w-64 bg-[#0f0f0f] border-r border-green-500 z-50 p-6 overflow-y-auto"
+      className="fixed top-0 left-0 h-full w-80 md:w-96 bg-[#0f0f0f] z-50 p-6 overflow-y-auto"
     >
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-green-400">Places</h2>
-        <button onClick={onClose} aria-label="Close Sidebar">
+        <h2 className="text-xl font-bold text-green-400">Locations</h2>
+        <button onClick={onClose} aria-label="Close Sidebar" className='p-2 border rounded-md border-green-600 text-green-400 hover:bg-green-800/20 transition hover:scale-105 active:scale-95 cursor-pointer'>
           <X className="text-white w-5 h-5" />
         </button>
       </div>
