@@ -32,7 +32,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Device Monitor</title>
         <meta name="description" content="Monitor device statuses in real time" />
-        <link rel="icon" href="./logo.svg" />
+        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground scroll-smooth`}
@@ -40,7 +40,7 @@ export default function RootLayout({
       >
         <PageTransitionWrapper>
           <AuthProvider>
-            {children} 
+            {children}
             <Toaster position="top-right" duration={3000} />
           </AuthProvider>
         </PageTransitionWrapper>

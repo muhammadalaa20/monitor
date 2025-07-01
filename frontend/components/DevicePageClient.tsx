@@ -97,13 +97,15 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
       >
         {/* Header Row with Buttons */}
         <div className="flex items-center justify-between w-full pr-8 pl-8">
-          <h1 className="text-3xl font-bold text-green-400">{device.name}</h1>
-          <div className="flex items-center gap-2">
+          <div className='flex items-center gap-2'>
             <Link href="/dashboard" className='p-2 border rounded-md border-green-600 text-green-400 hover:bg-green-800/20 transition hover:scale-105 active:scale-95 cursor-pointer'>
               <div className="border-green-500 text-green-400 hover:bg-green-900/20">
                 <LucideArrowLeft className="h-5 w-5" />
               </div>
             </Link>
+            <h1 className="text-3xl font-bold text-green-400">{device.name}</h1>
+          </div>
+          <div className="flex items-center gap-2">
             <div className="p-2 border rounded-md border-yellow-600 text-yellow-400 hover:bg-yellow-800/20 transition hover:scale-105 active:scale-95 cursor-pointer">
               <LucideEdit className="h-5 w-5" />
             </div>
@@ -114,7 +116,7 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
         </div>
 
         {/* Device Info Grid */}
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-8 w-full'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 p-8 w-full'>
           <Card className="bg-[#111] border border-green-600 w-full">
             <CardHeader>
               <CardTitle className="text-lg text-green-400">
