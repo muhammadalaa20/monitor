@@ -316,6 +316,41 @@ export default function DashboardPage() {
                     <strong className="text-white">Uptime:</strong>{" "}
                     {formatSeconds(mostActiveDevice.uptime_seconds || 0)}
                   </div>
+                  <div>
+                    <span className="font-semibold text-white">Place:</span>{" "}
+                    {mostActiveDevice.place}
+                  </div>
+                  <div>
+                    <div>
+                      <span className="font-semibold text-white">Status:</span>{" "}
+                      <span className="inline-flex items-center gap-1">
+                        <motion.span
+                          className={`w-2.5 h-2.5 rounded-full ${
+                            mostActiveDevice.status
+                              ? "bg-green-400"
+                              : "bg-red-400"
+                          }`}
+                          animate={{
+                            scale: [1, 1.4, 1],
+                            opacity: [1, 0.6, 1],
+                          }}
+                          transition={{
+                            duration: 1.2,
+                            repeat: Infinity,
+                          }}
+                        />
+                        <span
+                          className={
+                            mostActiveDevice.status
+                              ? "text-green-400"
+                              : "text-red-400"
+                          }
+                        >
+                          {mostActiveDevice.status ? "Online" : "Offline"}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="text-gray-400 text-sm pt-2">
@@ -336,6 +371,39 @@ export default function DashboardPage() {
                   <div>
                     <strong className="text-white">Uptime:</strong>{" "}
                     {formatSeconds(leastActiveDevice.uptime_seconds || 0)}
+                  </div>
+                  <div>
+                    <span className="font-semibold text-white">Place:</span>{" "}
+                    {leastActiveDevice.place}
+                  </div>
+                  <div>
+                    <div>
+                      <span className="font-semibold text-white">Status:</span>{" "}
+                      <span className="inline-flex items-center gap-1">
+                        <motion.span
+                          className={`w-2.5 h-2.5 rounded-full ${
+                            leastActiveDevice.status ? "bg-green-400" : "bg-red-400"
+                          }`}
+                          animate={{
+                            scale: [1, 1.4, 1],
+                            opacity: [1, 0.6, 1],
+                          }}
+                          transition={{
+                            duration: 1.2,
+                            repeat: Infinity,
+                          }}
+                        />
+                        <span
+                          className={
+                            leastActiveDevice.status
+                              ? "text-green-400"
+                              : "text-red-400"
+                          }
+                        >
+                          {leastActiveDevice.status ? "Online" : "Offline"}
+                        </span>
+                      </span>
+                    </div>
                   </div>
                 </div>
               ) : (

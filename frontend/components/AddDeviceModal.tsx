@@ -156,18 +156,29 @@ export function AddDeviceModal({ onDeviceAdded }: AddDeviceModalProps) {
                 <SelectItem value="PC">PC</SelectItem>
                 <SelectItem value="Server">Server</SelectItem>
                 <SelectItem value="Gateway">Gateway</SelectItem>
+                <SelectItem value="Switch">Switch</SelectItem>
+                <SelectItem value="Router">Router</SelectItem>
+                <SelectItem value="Printer">Printer</SelectItem>
+                <SelectItem value="Scanner">Scanner</SelectItem>
+                <SelectItem value="Camera">Camera</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="place">Location/Place *</Label>
-            <Input
-              id="place"
-              value={place}
-              onChange={(e) => setPlace(e.target.value)}
-              placeholder="e.g. IT Room"
-              className="bg-[#1a1a1a] border-gray-700 text-white"
-            />
+            <Select value={place} onValueChange={setPlace}>
+              <SelectTrigger className="bg-[#1a1a1a] border-gray-700 text-white">
+                <SelectValue placeholder="Select location" />
+              </SelectTrigger>
+              <SelectContent className="bg-[#1a1a1a] border-gray-700 text-white">
+                <SelectItem value="Gate Management">Gate Management</SelectItem>
+                <SelectItem value="CFS">CFS</SelectItem>
+                <SelectItem value="IT Room">IT Room</SelectItem>
+                <SelectItem value="Specialists Room">Specialists Room</SelectItem>
+                <SelectItem value="Server Room">Server Room</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="description">Description</Label>
