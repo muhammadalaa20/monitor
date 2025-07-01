@@ -30,13 +30,13 @@ Content-Type: application/json
 Authorization: {{token}}
 
     {
-    "name": "Muhammad's Router",
-    "ip": "192.168.1.1",
-    "type": "Router",
+    "name": "CFS PC2",
+    "ip": "172.17.20.77",
+    "type": "PC",
     "status": 1,
-    "description": "Home Router",
+    "description": "CFS Computer2",
     "last_seen": "2025-06-28T11:35:00Z",
-    "place": "Muhammad's Room",
+    "place": "CFS",
     "user_id": 1
     }
 

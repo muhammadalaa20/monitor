@@ -10,6 +10,10 @@ import {
   LucideActivity,
   LucideMenu,
   LucideX,
+  LucidePcCase,
+  LucideRocket,
+  LucidePercent,
+  LucideTurtle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +35,7 @@ function formatSeconds(seconds: number): string {
 interface Device {
   id: number;
   name: string;
+  type: string;
   status: number;
   uptime_seconds?: number;
   place: string;
@@ -42,6 +47,20 @@ export default function DashboardPage() {
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const lastDevice = [...devices].sort((a, b) => b.id - a.id)[0];
+  const mostActiveDevice = devices.length
+    ? devices.reduce((prev, curr) =>
+        (curr.uptime_seconds || 0) > (prev.uptime_seconds || 0) ? curr : prev
+      )
+    : null;
+
+  const leastActiveDevice = devices.length
+    ? devices.reduce((prev, curr) =>
+        (curr.uptime_seconds ?? Infinity) < (prev.uptime_seconds ?? Infinity)
+          ? curr
+          : prev
+      )
+    : null;
 
   useEffect(() => {
     // Avoid premature redirect before user is loaded
@@ -156,7 +175,10 @@ export default function DashboardPage() {
             <div className="flex items-center gap-2">
               {/* Welcome Message */}
               <p className="text-md hidden sm:block">
-                Welcome, <span className="font-semibold text-green-400">{user?.username}</span>
+                Welcome,{" "}
+                <span className="font-semibold text-green-400">
+                  {user?.username}
+                </span>
               </p>
               {/* Refresh Button */}
               <div
@@ -209,7 +231,7 @@ export default function DashboardPage() {
             <StatCard
               title="Total Devices"
               value={`${totalDevices}`}
-              icon={<LucideServer className="w-5 h-5 text-green-400" />}
+              icon={<LucideServer className="w-5 h-5 text-white" />}
             />
             <StatCard
               title="Online Devices"
@@ -224,8 +246,115 @@ export default function DashboardPage() {
             <StatCard
               title="Avg. Uptime"
               value={formatSeconds(avgUptimeSeconds)}
-              icon={<LucideActivity className="w-5 h-5 text-green-400" />}
+              icon={<LucideActivity className="w-5 h-5 text-purple-400" />}
             />
+            <StatCard
+              title="Last Created Device"
+              icon={<LucidePcCase className="w-5 h-5 text-green-400" />}
+            >
+              {lastDevice ? (
+                <div className="text-sm text-gray-300 space-y-1 pt-2">
+                  <div>
+                    <span className="font-semibold text-white">Name:</span>{" "}
+                    {lastDevice.name}
+                  </div>
+                  <div>
+                    <span className="font-semibold text-white">Type:</span>{" "}
+                    {lastDevice.type}
+                  </div>
+                  <div>
+                    <span className="font-semibold text-white">Place:</span>{" "}
+                    {lastDevice.place}
+                  </div>
+                  <div>
+                    <div>
+                      <span className="font-semibold text-white">Status:</span>{" "}
+                      <span className="inline-flex items-center gap-1">
+                        <motion.span
+                          className={`w-2.5 h-2.5 rounded-full ${
+                            lastDevice.status ? "bg-green-400" : "bg-red-400"
+                          }`}
+                          animate={{
+                            scale: [1, 1.4, 1],
+                            opacity: [1, 0.6, 1],
+                          }}
+                          transition={{
+                            duration: 1.2,
+                            repeat: Infinity,
+                          }}
+                        />
+                        <span
+                          className={
+                            lastDevice.status
+                              ? "text-green-400"
+                              : "text-red-400"
+                          }
+                        >
+                          {lastDevice.status ? "Online" : "Offline"}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-gray-400 text-sm pt-2">
+                  No devices yet.
+                </div>
+              )}
+            </StatCard>
+            <StatCard
+              title="Most Active Device"
+              icon={<LucideRocket className="w-5 h-5 text-orange-400" />}
+            >
+              {mostActiveDevice ? (
+                <div className="text-sm text-gray-300 pt-2 space-y-1">
+                  <div>
+                    <strong className="text-white">Name:</strong>{" "}
+                    {mostActiveDevice.name}
+                  </div>
+                  <div>
+                    <strong className="text-white">Uptime:</strong>{" "}
+                    {formatSeconds(mostActiveDevice.uptime_seconds || 0)}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-gray-400 text-sm pt-2">
+                  No data available.
+                </div>
+              )}
+            </StatCard>
+            <StatCard
+              title="Least Active Device"
+              icon={<LucideTurtle className="w-5 h-5 text-yellow-400" />}
+            >
+              {leastActiveDevice ? (
+                <div className="text-sm text-gray-300 pt-2 space-y-1">
+                  <div>
+                    <strong className="text-white">Name:</strong>{" "}
+                    {leastActiveDevice.name}
+                  </div>
+                  <div>
+                    <strong className="text-white">Uptime:</strong>{" "}
+                    {formatSeconds(leastActiveDevice.uptime_seconds || 0)}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-gray-400 text-sm pt-2">
+                  No data available.
+                </div>
+              )}
+            </StatCard>
+
+            <StatCard
+              title="Online Ratio"
+              icon={<LucidePercent className="w-5 h-5 text-blue-400" />}
+            >
+              <div className="text-2xl font-bold text-white pt-2">
+                {totalDevices > 0
+                  ? `${Math.round((onlineDevices / totalDevices) * 100)}%`
+                  : "N/A"}
+              </div>
+            </StatCard>
           </div>
 
           {/* 🔹 Charts */}
@@ -311,10 +440,12 @@ function StatCard({
   title,
   value,
   icon,
+  children,
 }: {
   title: string;
-  value: string;
+  value?: string;
   icon: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
     <Card className="bg-[#111] border border-gray-700 h-full">
@@ -325,7 +456,10 @@ function StatCard({
         {icon}
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-green-400">{value}</div>
+        {value && (
+          <div className="text-2xl font-bold text-green-400">{value}</div>
+        )}
+        {children}
       </CardContent>
     </Card>
   );
