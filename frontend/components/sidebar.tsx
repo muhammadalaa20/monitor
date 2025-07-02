@@ -1,10 +1,23 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronRight, Monitor, X } from 'lucide-react';
-import { Device } from '../app/dashboard/page'; // Ensure this matches your data shape
+import Link from "next/link";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ChevronDown,
+  ChevronRight,
+  Monitor,
+  X,
+  LucidePrinter,
+  Server,
+  Router,
+  LucideScan,
+  Camera,
+  Wifi,
+  HelpCircle,
+  HardDrive,
+} from "lucide-react";
+import { Device } from "../app/dashboard/page"; // Ensure this matches your data shape
 
 interface SidebarProps {
   open: boolean;
@@ -12,20 +25,33 @@ interface SidebarProps {
   devices: Device[];
 }
 
+const deviceTypeIcons: Record<string, React.ReactNode> = {
+  PC: <Monitor className="w-4 h-4 text-green-400" />,
+  Server: <Server className="w-4 h-4 text-green-400" />,
+  Gateway: <HardDrive className="w-4 h-4 text-green-400" />,
+  Switch: <Router className="w-4 h-4 text-green-400" />,
+  Router: <Router className="w-4 h-4 text-green-400" />,
+  Printer: <LucidePrinter className="w-4 h-4 text-green-400" />,
+  Scanner: <LucideScan className="w-4 h-4 text-green-400" />,
+  Camera: <Camera className="w-4 h-4 text-green-400" />,
+  "Access Point": <Wifi className="w-4 h-4 text-green-400" />,
+  Other: <HelpCircle className="w-4 h-4 text-green-400" />,
+};
+
 export function Sidebar({ open, onClose, devices }: SidebarProps) {
   const [openPlaces, setOpenPlaces] = useState<Record<string, boolean>>({});
 
   if (!open) return null;
 
   const grouped = devices.reduce((acc: Record<string, Device[]>, device) => {
-    const place = device.place || 'Unassigned';
+    const place = device.place || "Unassigned";
     if (!acc[place]) acc[place] = [];
     acc[place].push(device);
     return acc;
   }, {});
 
   const togglePlace = (place: string) => {
-    setOpenPlaces(prev => ({ ...prev, [place]: !prev[place] }));
+    setOpenPlaces((prev) => ({ ...prev, [place]: !prev[place] }));
   };
 
   return (
@@ -38,7 +64,11 @@ export function Sidebar({ open, onClose, devices }: SidebarProps) {
     >
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold text-green-400">Locations</h2>
-        <button onClick={onClose} aria-label="Close Sidebar" className='p-2 border rounded-md border-green-600 text-green-400 hover:bg-green-800/20 transition hover:scale-105 active:scale-95 cursor-pointer'>
+        <button
+          onClick={onClose}
+          aria-label="Close Sidebar"
+          className="p-2 border rounded-md border-green-600 text-green-400 hover:bg-green-800/20 transition hover:scale-105 active:scale-95 cursor-pointer"
+        >
           <X className="text-white w-5 h-5" />
         </button>
       </div>
@@ -61,17 +91,19 @@ export function Sidebar({ open, onClose, devices }: SidebarProps) {
             {openPlaces[place] && (
               <motion.ul
                 initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
+                animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 className="pl-4 mt-2 space-y-1"
               >
-                {devs.map(device => (
+                {devs.map((device) => (
                   <li key={device.id}>
                     <Link
                       href={`/device/${device.id}`}
                       className="flex items-center gap-2 px-2 py-1 hover:bg-green-700/20 rounded-md text-sm text-gray-200 transition"
                     >
-                      <Monitor className="w-4 h-4 text-green-400" />
+                      {deviceTypeIcons[device.type] ?? (
+                        <HelpCircle className="w-4 h-4 text-green-400" />
+                      )}
                       {device.name}
                     </Link>
                   </li>

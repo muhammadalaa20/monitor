@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { EditDeviceModal } from "@/components/EditDeviceModal";
 import { DeleteDeviceModal } from "@/components/DeleteDeviceModal";
+import { useRouter } from "next/navigation";
 interface Device {
   id: number;
   name: string;
@@ -40,6 +41,24 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
   const { user } = useAuth();
   const [device, setDevice] = useState<Device | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [relatedDevices, setRelatedDevices] = useState<Device[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Avoid premature redirect before user is loaded
+    const auth = localStorage.getItem("auth");
+
+    if (!auth) {
+      router.replace("/login");
+    }
+  }, [user?.token, router]);
+  useEffect(() => {
+    if (user === null) return;
+    if (!user?.token) {
+      setError("You must be logged in to view this page.");
+      router.push("/login");
+    }
+  }, [user, router]);
 
   useEffect(() => {
     if (!user?.token) {
@@ -74,9 +93,42 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
         console.error(err);
       }
     };
-
     fetchDevice();
+    const interval = setInterval(fetchDevice, 1000);
+    return () => clearInterval(interval);
   }, [deviceId, user?.token]);
+
+  useEffect(() => {
+    if (!user?.token || !device?.place) return;
+
+    const fetchRelatedDevices = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/devices/place/${encodeURIComponent(
+            device.place
+          )}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (res.ok) {
+          const data = await res.json();
+          const filtered = data.filter((d: Device) => d.id !== device.id);
+          setRelatedDevices(filtered);
+        }
+      } catch (error) {
+        console.error("Failed to fetch related devices:", error);
+      }
+    };
+
+    fetchRelatedDevices();
+    const interval = setInterval(fetchRelatedDevices, 1000);
+    return () => clearInterval(interval);
+  }, [device?.place, user?.token, device?.id]);
 
   if (error) return <div className="p-8 text-red-500">Error: {error}</div>;
   if (!device)
@@ -254,6 +306,49 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
             </CardContent>
           </Card>
         </div>
+        {relatedDevices.length > 0 && (
+          <div className="w-full px-8 mt-4">
+            <h2 className="text-xl font-semibold text-white mb-2">
+              Other Devices in the same place
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+              {relatedDevices.map((d) => (
+                <Link key={d.id} href={`/device/${d.id}`}>
+                  <Card
+                    className={`transition-all hover:scale-105 cursor-pointer ${
+                      d.status
+                        ? "bg-[#111] border border-green-600 hover:bg-green-800/10"
+                        : "bg-[#1a0000] border border-red-600 hover:bg-red-800/10"
+                    }`}
+                  >
+                    <CardHeader>
+                      <CardTitle className="text-green-400 text-md flex justify-between items-center">
+                        {d.name}
+                        <motion.span
+                          className={`w-2 h-2 rounded-full ${
+                            d.status ? "bg-green-400" : "bg-red-400"
+                          }`}
+                          animate={{
+                            scale: [1, 1.4, 1],
+                            opacity: [1, 0.7, 1],
+                          }}
+                          transition={{
+                            duration: 1.2,
+                            repeat: Infinity,
+                            repeatType: "loop",
+                          }}
+                        />
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-white text-sm">
+                      <p className="text-sm text-gray-400">{d.ip}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </motion.div>
     </main>
   );

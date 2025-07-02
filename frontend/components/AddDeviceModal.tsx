@@ -161,7 +161,7 @@ export function AddDeviceModal({ onDeviceAdded }: AddDeviceModalProps) {
                 <SelectItem value="Printer">Printer</SelectItem>
                 <SelectItem value="Scanner">Scanner</SelectItem>
                 <SelectItem value="Camera">Camera</SelectItem>
-                <SelectItem value="Monitor">Access Point</SelectItem>
+                <SelectItem value="Access Point">Access Point</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
