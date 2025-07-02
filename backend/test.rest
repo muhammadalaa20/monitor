@@ -44,6 +44,10 @@ Authorization: {{token}}
 GET http://localhost:5000/api/devices/21
 Authorization: {{token}}
 
+### Get a Device by place
+GET http://localhost:5000/api/devices/place/Access%20Point
+Authorization: {{token}}
+
 ### Update a Device by ID
 PUT http://localhost:5000/api/devices/25
 Authorization: {{token}}

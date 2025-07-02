@@ -3,6 +3,7 @@
 import {
   getAllDevices,
   getDeviceById,
+  getDevicesByPlace,
   createDevice,
   updateDevice,
   deleteDevice
@@ -27,6 +28,16 @@ export async function fetchDeviceById(req, res) {
     res.json(device);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch device.' });
+  }
+}
+
+export async function fetchDevicesByPlace(req, res) {
+  try {
+    const db = await initDb();
+    const devices = await getDevicesByPlace(db, req.params.place);
+    res.json(devices);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch devices by place.' });
   }
 }
 

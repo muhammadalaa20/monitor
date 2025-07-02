@@ -15,6 +15,14 @@ export async function getDeviceById(db, id) {
   );
 }
 
+// Get devices by place
+export async function getDevicesByPlace(db, place) {
+  return await db.all(
+    `SELECT * FROM devices WHERE place = ? ORDER BY id DESC`,
+    [place]
+  );
+}
+
 // Add device
 export async function createDevice(db, device) {
   const {

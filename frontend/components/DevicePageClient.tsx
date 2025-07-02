@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { EditDeviceModal } from "@/components/EditDeviceModal";
 import { DeleteDeviceModal } from "@/components/DeleteDeviceModal";
-
 interface Device {
   id: number;
   name: string;
