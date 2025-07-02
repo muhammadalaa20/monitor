@@ -30,13 +30,13 @@ Content-Type: application/json
 Authorization: {{token}}
 
     {
-    "name": "CFS PC2",
-    "ip": "172.17.20.77",
-    "type": "PC",
+    "name": "AP-52-C10",
+    "ip": "172.17.10.52",
+    "type": "Access Point",
     "status": 1,
-    "description": "CFS Computer2",
+    "description": "Access Point on Crane 10",
     "last_seen": "2025-06-28T11:35:00Z",
-    "place": "CFS",
+    "place": "Crane 10",
     "user_id": 1
     }
 
@@ -45,19 +45,19 @@ GET http://localhost:5000/api/devices/21
 Authorization: {{token}}
 
 ### Update a Device by ID
-PUT http://localhost:5000/api/devices/2
+PUT http://localhost:5000/api/devices/25
 Authorization: {{token}}
 Content-Type: application/json
 
   {
-    "id": 2,
-    "name": "Muhammad's Laptop",
-    "ip": "192.168.1.5",
-    "type": "Laptop",
+    "id": 24,
+    "name": "AP-52-C10",
+    "ip": "172.17.10.51",
+    "type": "Access Point",
     "status": 1,
-    "description": "Personal Laptop",
+    "description": "Access Point on Crane 10",
     "last_seen": "2025-06-28T11:35:00Z",
-    "place": "Muhammad's Room",
+    "place": "Access Point",
     "user_id": 1
   }
 

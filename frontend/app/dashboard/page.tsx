@@ -384,7 +384,7 @@ export default function DashboardPage() {
               )}
             </StatCard>
             <StatCard
-              title="Last Offline Device"
+              title="Least Active Device"
               icon={<LucideTurtle className="w-5 h-5 text-yellow-400" />}
             >
               {leastActiveDevice ? (

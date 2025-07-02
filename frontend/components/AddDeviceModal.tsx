@@ -161,6 +161,7 @@ export function AddDeviceModal({ onDeviceAdded }: AddDeviceModalProps) {
                 <SelectItem value="Printer">Printer</SelectItem>
                 <SelectItem value="Scanner">Scanner</SelectItem>
                 <SelectItem value="Camera">Camera</SelectItem>
+                <SelectItem value="Monitor">Access Point</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
@@ -174,9 +175,13 @@ export function AddDeviceModal({ onDeviceAdded }: AddDeviceModalProps) {
               <SelectContent className="bg-[#1a1a1a] border-gray-700 text-white">
                 <SelectItem value="Gate Management">Gate Management</SelectItem>
                 <SelectItem value="CFS">CFS</SelectItem>
+                <SelectItem value="Dangerous CFS">Dangerous CFS</SelectItem>
                 <SelectItem value="IT Room">IT Room</SelectItem>
                 <SelectItem value="Specialists Room">Specialists Room</SelectItem>
                 <SelectItem value="Server Room">Server Room</SelectItem>
+                <SelectItem value="Management Building">Management Building</SelectItem>
+                <SelectItem value="New Building">New Building</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
