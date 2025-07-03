@@ -7,6 +7,8 @@ export async function initDb() {
     driver: sqlite3.Database
   });
 
+  await db.exec(`PRAGMA journal_mode = WAL;`);
+
   await db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,6 +33,6 @@ export async function initDb() {
     );
   `);
 
-  console.log('✅ SQLite initialized.');
+  console.log('✅ SQLite initialized successfully with WAL journal mode.');
   return db; 
 }

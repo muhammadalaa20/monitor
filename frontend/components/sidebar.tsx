@@ -18,6 +18,7 @@ import {
   HardDrive,
 } from "lucide-react";
 import { Device } from "../app/dashboard/page"; // Ensure this matches your data shape
+import { Input } from "@/components/ui/input";
 
 interface SidebarProps {
   open: boolean;
@@ -40,10 +41,15 @@ const deviceTypeIcons: Record<string, React.ReactNode> = {
 
 export function Sidebar({ open, onClose, devices }: SidebarProps) {
   const [openPlaces, setOpenPlaces] = useState<Record<string, boolean>>({});
+  const [ipFilter, setIpFilter] = useState("");
+
+  const filteredDevices = devices.filter(device =>
+    device.ip.toLowerCase().includes(ipFilter.toLowerCase())
+  );
 
   if (!open) return null;
 
-  const grouped = devices.reduce((acc: Record<string, Device[]>, device) => {
+  const grouped = filteredDevices.reduce((acc: Record<string, Device[]>, device) => {
     const place = device.place || "Unassigned";
     if (!acc[place]) acc[place] = [];
     acc[place].push(device);
@@ -72,6 +78,13 @@ export function Sidebar({ open, onClose, devices }: SidebarProps) {
           <X className="text-white w-5 h-5" />
         </button>
       </div>
+
+      <Input
+        placeholder="Filter by IP"
+        value={ipFilter}
+        onChange={(e) => setIpFilter(e.target.value)}
+        className="mb-4 border border-green-600 text-green-400 hover:bg-green-800/20 transition hover:scale-105 active:scale-95 cursor-pointer"
+      />
 
       {Object.entries(grouped).map(([place, devs]) => (
         <div key={place} className="mb-4">

@@ -34,6 +34,7 @@ function formatSeconds(seconds: number): string {
 
 export interface Device {
   id: number;
+  ip: string;
   name: string;
   type: string;
   status: number;
