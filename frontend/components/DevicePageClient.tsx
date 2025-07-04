@@ -315,7 +315,7 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
               {relatedDevices.map((d) => (
                 <Link key={d.id} href={`/device/${d.id}`}>
                   <Card
-                    className={`transition-all hover:scale-105 cursor-pointer ${
+                    className={`min-h-[150px] flex flex-col justify-between transition-all hover:scale-105 cursor-pointer ${
                       d.status
                         ? "bg-[#111] border border-green-600 hover:bg-green-800/10"
                         : "bg-[#1a0000] border border-red-600 hover:bg-red-800/10"

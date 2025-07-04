@@ -28,7 +28,17 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   useEffect(() => {
-    initAlertSound();
+    const unlockAudio = () => {
+      initAlertSound();
+      const sound = new Audio("/alert.mp3");
+      sound.play().then(() => {
+        sound.pause();
+        sound.currentTime = 0;
+      });
+      window.removeEventListener("click", unlockAudio);
+    };
+
+    window.addEventListener("click", unlockAudio);
   }, []);
   return (
     <html lang="en">

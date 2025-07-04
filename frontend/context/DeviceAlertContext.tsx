@@ -70,7 +70,7 @@ export const DeviceAlertProvider = ({ children }: { children: React.ReactNode })
     };
 
     fetchStatus();
-    const interval = setInterval(fetchStatus, 5000);
+    const interval = setInterval(fetchStatus, 10000);
     return () => clearInterval(interval);
   }, [user?.token]);
 
@@ -91,7 +91,7 @@ export const DeviceAlertProvider = ({ children }: { children: React.ReactNode })
           playAlertSound();
         }
       });
-    }, 5000);
+    }, 10000);
     return () => clearInterval(interval);
   }, [alertState, devices]);
 

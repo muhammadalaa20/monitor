@@ -1,19 +1,19 @@
-// alerts.ts
-let audio: HTMLAudioElement | null = null;
+// lib/alerts.ts
+let alertAudio: HTMLAudioElement | null = null;
 
 export function initAlertSound() {
-  if (!audio) {
-    audio = new Audio("/alert.mp3");
-    audio.load();
-    document.body.addEventListener("click", () => {
-      audio!.play().catch(() => { }); // "Unlock" the audio
-    }, { once: true });
+  if (typeof window !== "undefined") {
+    alertAudio = new Audio("/alert.mp3");
+    alertAudio.load(); // Preload it
   }
 }
 
 export function playAlertSound() {
-  if (audio) {
-    audio.currentTime = 0;
-    audio.play().catch(() => { }); // Fail silently if still blocked
-  }
+  if (!alertAudio) return;
+  alertAudio.currentTime = 0;
+  alertAudio
+    .play()
+    .catch((err) => {
+      console.warn("Sound blocked or failed to play:", err);
+    });
 }
