@@ -87,6 +87,12 @@ export function Sidebar({ open, onClose, devices }: SidebarProps) {
         className="mb-4 border border-green-600 text-green-400 hover:bg-green-800/20 transition hover:scale-105 active:scale-95 cursor-pointer"
       />
 
+      {/* You can select up to three devices to get notifications */}
+      <div className="mb-4 flex items-center justify-start gap-2">
+        <HelpCircle className="w-4 h-4 text-yellow-300" />
+        <h5 className="text-xs text-gray-400">Select three devices to get alerts</h5>
+      </div>
+
       {Object.entries(grouped).map(([place, devs]) => (
         <div key={place} className="mb-4">
           <button
@@ -115,10 +121,10 @@ export function Sidebar({ open, onClose, devices }: SidebarProps) {
                       href={`/device/${device.id}`}
                       className="flex items-center px-2 py-2 gap-2 hover:bg-green-700/20 rounded-md text-sm text-gray-200 transition w-full"
                     >
-                        {deviceTypeIcons[device.type] ?? (
-                          <HelpCircle className="w-4 h-4 text-green-400" />
-                        )}
-                        {device.name}
+                      {deviceTypeIcons[device.type] ?? (
+                        <HelpCircle className="w-4 h-4 text-green-400" />
+                      )}
+                      {device.name}
                     </Link>
                     <AlertBell deviceId={device.id} />
                   </li>
