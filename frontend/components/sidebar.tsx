@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import AlertBell from "./AlertBell";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown,
@@ -109,16 +110,17 @@ export function Sidebar({ open, onClose, devices }: SidebarProps) {
                 className="pl-4 mt-2 space-y-1"
               >
                 {devs.map((device) => (
-                  <li key={device.id}>
+                  <li key={device.id} className="flex items-center justify-between gap-2">
                     <Link
                       href={`/device/${device.id}`}
-                      className="flex items-center gap-2 px-2 py-1 hover:bg-green-700/20 rounded-md text-sm text-gray-200 transition"
+                      className="flex items-center px-2 py-2 gap-2 hover:bg-green-700/20 rounded-md text-sm text-gray-200 transition w-full"
                     >
-                      {deviceTypeIcons[device.type] ?? (
-                        <HelpCircle className="w-4 h-4 text-green-400" />
-                      )}
-                      {device.name}
+                        {deviceTypeIcons[device.type] ?? (
+                          <HelpCircle className="w-4 h-4 text-green-400" />
+                        )}
+                        {device.name}
                     </Link>
+                    <AlertBell deviceId={device.id} />
                   </li>
                 ))}
               </motion.ul>

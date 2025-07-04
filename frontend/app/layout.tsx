@@ -1,5 +1,6 @@
 // app/layout.tsx
 'use client';
+import { useEffect } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
@@ -9,7 +10,8 @@ import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { AuthProvider } from '@/context/AuthContext';
 import { Toaster } from "@/components/ui/sonner"
-
+import { DeviceAlertProvider } from "@/context/DeviceAlertContext";
+import { initAlertSound } from "@/lib/alerts";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -25,6 +27,9 @@ export default function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
+  useEffect(() => {
+    initAlertSound();
+  }, []);
   return (
     <html lang="en">
       <head>
@@ -40,8 +45,10 @@ export default function RootLayout({
       >
         <PageTransitionWrapper>
           <AuthProvider>
-            {children}
-            <Toaster position="top-right" duration={3000} />
+            <DeviceAlertProvider>
+              {children}
+              <Toaster position="bottom-right" duration={3000} />
+            </DeviceAlertProvider>
           </AuthProvider>
         </PageTransitionWrapper>
       </body>
