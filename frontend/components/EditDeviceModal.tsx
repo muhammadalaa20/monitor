@@ -1,5 +1,6 @@
 "use client";
 
+import { API_BASE_URL } from "@/lib/config";
 import {
   Dialog,
   DialogTrigger,
@@ -52,7 +53,7 @@ export function EditDeviceModal({ device, onUpdated }: EditDeviceModalProps) {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/api/devices/${device.id}`,
+        `${API_BASE_URL}/api/devices/${device.id}`,
         {
           method: "PUT",
           headers: {

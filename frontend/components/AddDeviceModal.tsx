@@ -1,5 +1,6 @@
 "use client";
 
+import { API_BASE_URL } from "@/lib/config";
 import {
   Dialog,
   DialogTrigger,
@@ -57,7 +58,7 @@ export function AddDeviceModal({ onDeviceAdded }: AddDeviceModalProps) {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/devices", {
+      const res = await fetch(`${API_BASE_URL}/api/devices`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

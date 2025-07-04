@@ -1,5 +1,5 @@
 'use client';
-
+import { API_BASE_URL } from '@/lib/config';
 import { toast } from 'sonner';
 import {
   createContext,
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 🔹 Login logic
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),

@@ -8,22 +8,23 @@ import {
   updateDevice,
   deleteDevice
 } from '../models/deviceModel.js';
-import { initDb } from '../db/index.js';
 
-export async function fetchDevices(req, res) {
+import { getDb } from '../db/index.js';
+
+export function fetchDevices(req, res) {
   try {
-    const db = await initDb();
-    const devices = await getAllDevices(db);
+    const db = getDb();
+    const devices = getAllDevices(db);
     res.json(devices);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch devices.' });
   }
 }
 
-export async function fetchDeviceById(req, res) {
+export function fetchDeviceById(req, res) {
   try {
-    const db = await initDb();
-    const device = await getDeviceById(db, req.params.id);
+    const db = getDb();
+    const device = getDeviceById(db, req.params.id);
     if (!device) return res.status(404).json({ error: 'Device not found.' });
     res.json(device);
   } catch (err) {
@@ -31,21 +32,20 @@ export async function fetchDeviceById(req, res) {
   }
 }
 
-export async function fetchDevicesByPlace(req, res) {
+export function fetchDevicesByPlace(req, res) {
   try {
-    const db = await initDb();
-    const devices = await getDevicesByPlace(db, req.params.place);
+    const db = getDb();
+    const devices = getDevicesByPlace(db, req.params.place);
     res.json(devices);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch devices by place.' });
   }
 }
 
-export async function addDevice(req, res) {
+export function addDevice(req, res) {
   try {
-    const db = await initDb();
+    const db = getDb();
 
-    // Ensure user is attached (from auth middleware)
     if (!req.user || !req.user.id) {
       return res.status(401).json({ error: "Unauthorized: missing user" });
     }
@@ -61,7 +61,6 @@ export async function addDevice(req, res) {
       uptime_seconds = 0,
     } = req.body;
 
-    // Basic validation
     if (!name || !ip || !last_seen) {
       return res.status(400).json({ error: "Missing required fields (name, ip, last_seen)" });
     }
@@ -78,32 +77,32 @@ export async function addDevice(req, res) {
       user_id: req.user.id,
     };
 
-    const device = await createDevice(db, deviceData);
+    const device = createDevice(db, deviceData);
     res.status(201).json(device);
 
   } catch (err) {
-    console.error("Add Device Error:", err); // 👈 Helps you debug real cause
+    console.error("Add Device Error:", err);
     res.status(500).json({ error: "Internal Server Error: " + err.message });
   }
 }
 
-
-export async function editDevice(req, res) {
+export function editDevice(req, res) {
   try {
-    const db = await initDb();
-    const device = await updateDevice(db, req.params.id, req.body);
+    const db = getDb();
+    const device = updateDevice(db, req.params.id, req.body);
     res.json(device);
   } catch (err) {
     res.status(500).json({ error: 'Failed to update device.' });
   }
 }
 
-export async function removeDevice(req, res) {
+export function removeDevice(req, res) {
   try {
-    const db = await initDb();
-    const result = await deleteDevice(db, req.params.id, req.user.id);
-    if (result.changes === 0)
+    const db = getDb();
+    const result = deleteDevice(db, req.params.id, req.user.id);
+    if (!result || result.changes === 0) {
       return res.status(404).json({ error: 'Device not found.' });
+    }
     res.json({ message: 'Device deleted.' });
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete device.' });

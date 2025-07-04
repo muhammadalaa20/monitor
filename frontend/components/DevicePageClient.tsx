@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from "@/lib/config";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,7 +72,7 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
         console.log("🔐 Using token:", user.token);
 
         const res = await fetch(
-          `http://localhost:5000/api/devices/${deviceId}`,
+          `${API_BASE_URL}/api/devices/${deviceId}`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,
@@ -104,7 +105,7 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
     const fetchRelatedDevices = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/devices/place/${encodeURIComponent(
+          `${API_BASE_URL}/api/devices/place/${encodeURIComponent(
             device.place
           )}`,
           {
@@ -311,7 +312,7 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
             <h2 className="text-xl font-semibold text-white mb-2">
               Other Devices in the same place
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
               {relatedDevices.map((d) => (
                 <Link key={d.id} href={`/device/${d.id}`}>
                   <Card

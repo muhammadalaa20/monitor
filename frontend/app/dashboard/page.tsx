@@ -1,5 +1,5 @@
 "use client";
-
+import { API_BASE_URL } from "@/lib/config";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -82,7 +82,7 @@ export default function DashboardPage() {
     if (!user?.token) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/devices", {
+      const res = await fetch(`${API_BASE_URL}/api/devices`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -157,7 +157,7 @@ export default function DashboardPage() {
   const refetchDevices = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/devices", {
+      const res = await fetch(`${API_BASE_URL}/api/devices`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },

@@ -1,5 +1,6 @@
 // context/DeviceAlertContext.tsx
 "use client";
+import { API_BASE_URL } from "@/lib/config";
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { playAlertSound } from "../lib/alerts";
@@ -45,7 +46,7 @@ export const DeviceAlertProvider = ({ children }: { children: React.ReactNode })
       if (!user?.token) return; // Avoid request if not authenticated
 
       try {
-        const res = await fetch("http://localhost:5000/api/devices", {
+        const res = await fetch(`${API_BASE_URL}/api/devices`, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },

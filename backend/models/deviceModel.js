@@ -1,30 +1,22 @@
-// Device model
+// Device model using better-sqlite3
 
 // Get all devices
-export async function getAllDevices(db) {
-  return await db.all(
-    `SELECT * FROM devices ORDER BY id DESC`,
-  );
+export function getAllDevices(db) {
+  return db.prepare(`SELECT * FROM devices ORDER BY id DESC`).all();
 }
 
 // Get device by id
-export async function getDeviceById(db, id) {
-  return await db.get(
-    `SELECT * FROM devices WHERE id = ?`,
-    [id]
-  );
+export function getDeviceById(db, id) {
+  return db.prepare(`SELECT * FROM devices WHERE id = ?`).get(id);
 }
 
 // Get devices by place
-export async function getDevicesByPlace(db, place) {
-  return await db.all(
-    `SELECT * FROM devices WHERE place = ? ORDER BY id DESC`,
-    [place]
-  );
+export function getDevicesByPlace(db, place) {
+  return db.prepare(`SELECT * FROM devices WHERE place = ? ORDER BY id DESC`).all(place);
 }
 
 // Add device
-export async function createDevice(db, device) {
+export function createDevice(db, device) {
   const {
     name,
     ip,
@@ -34,20 +26,20 @@ export async function createDevice(db, device) {
     last_seen,
     place,
     user_id,
-    uptime_seconds = 0
+    uptime_seconds = 0,
   } = device;
 
-  const result = await db.run(
-    `INSERT INTO devices (name, ip, type, status, description, last_seen, place, uptime_seconds, user_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [name, ip, type, status, description, last_seen, place, uptime_seconds, user_id]
-  );
+  const stmt = db.prepare(`
+    INSERT INTO devices (name, ip, type, status, description, last_seen, place, uptime_seconds, user_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
 
-  return { id: result.lastID, ...device };
+  const result = stmt.run(name, ip, type, status, description, last_seen, place, uptime_seconds, user_id);
+  return { id: result.lastInsertRowid, ...device };
 }
 
 // Update device
-export async function updateDevice(db, id, device) {
+export function updateDevice(db, id, device) {
   const {
     name,
     ip,
@@ -58,8 +50,8 @@ export async function updateDevice(db, id, device) {
     place
   } = device;
 
-  await db.run(
-    `UPDATE devices SET
+  db.prepare(`
+    UPDATE devices SET
       name = ?,
       ip = ?,
       type = ?,
@@ -67,18 +59,13 @@ export async function updateDevice(db, id, device) {
       description = ?,
       last_seen = ?,
       place = ?
-     WHERE id = ?`,
-    [name, ip, type, status, description, last_seen, place, id]
-  );
+    WHERE id = ?
+  `).run(name, ip, type, status, description, last_seen, place, id);
 
   return { id, ...device };
 }
 
 // Delete device
-
-export async function deleteDevice(db, id, userId) {
-  return await db.run(
-    `DELETE FROM devices WHERE id = ? AND user_id = ?`,
-    [id, userId]
-  );
+export function deleteDevice(db, id, userId) {
+  return db.prepare(`DELETE FROM devices WHERE id = ? AND user_id = ?`).run(id, userId);
 }

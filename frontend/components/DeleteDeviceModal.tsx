@@ -1,3 +1,5 @@
+
+import { API_BASE_URL } from "@/lib/config";
 import {
   Dialog,
   DialogTrigger,
@@ -27,7 +29,7 @@ export function DeleteDeviceModal({ deviceId, onDeleted }: DeleteDeviceModalProp
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/devices/${deviceId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/devices/${deviceId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${user?.token}`,
