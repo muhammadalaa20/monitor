@@ -22,7 +22,7 @@ export function LogoutButton() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild title="Logout">
         <div
           className="p-2 border rounded-md border-red-600 text-red-400 hover:bg-red-800/20 transition hover:scale-105 active:scale-95 cursor-pointer"
         >

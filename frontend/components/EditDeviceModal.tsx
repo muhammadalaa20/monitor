@@ -92,6 +92,7 @@ export function EditDeviceModal({ device, onUpdated }: EditDeviceModalProps) {
         <motion.button
           className="p-2 border border-yellow-600 text-yellow-400 rounded-md hover:bg-yellow-800/20 transition hover:scale-105 active:scale-95 cursor-pointer"
           whileTap={{ scale: 0.9 }}
+          title="Edit Device"
         >
           <LucideEdit className="h-5 w-5" />
         </motion.button>

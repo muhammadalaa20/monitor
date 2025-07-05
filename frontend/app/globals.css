@@ -146,3 +146,13 @@
   scrollbar-color: #22c55e #111;
 }
 
+
+
+/* globals.css */
+.glow-text {
+  text-shadow: 0 0 8px #00ff62, 0 0 16px #00ff88;
+}
+
+.glow-ring {
+  box-shadow: 0 0 12px rgba(0, 255, 64, 0.6), 0 0 24px rgba(0, 255, 85, 0.3);
+}

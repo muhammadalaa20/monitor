@@ -54,6 +54,7 @@ export function DeleteDeviceModal({ deviceId, onDeleted }: DeleteDeviceModalProp
         <motion.button
           className="p-2 border border-red-600 text-red-400 rounded-md hover:bg-red-800/20 transition hover:scale-105 active:scale-95 cursor-pointer"
           whileTap={{ scale: 0.9 }}
+          title="Delete Device"
         >
           <LucideTrash2 className="h-5 w-5" />
         </motion.button>

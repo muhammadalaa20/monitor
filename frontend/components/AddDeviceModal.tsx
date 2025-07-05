@@ -102,6 +102,7 @@ export function AddDeviceModal({ onDeviceAdded }: AddDeviceModalProps) {
           className="p-2 border border-green-500 rounded-md hover:bg-green-900/20 transition cursor-pointer hover:scale-105 active:scale-95"
           whileTap={{ scale: 0.9 }}
           aria-label="Add Device"
+          title="Add Device"
         >
           <AnimatePresence mode="wait">
             <motion.div
@@ -182,6 +183,7 @@ export function AddDeviceModal({ onDeviceAdded }: AddDeviceModalProps) {
                 <SelectItem value="Server Room">Server Room</SelectItem>
                 <SelectItem value="Management Building">Management Building</SelectItem>
                 <SelectItem value="New Building">New Building</SelectItem>
+                <SelectItem value="Taasher">Taasher</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>

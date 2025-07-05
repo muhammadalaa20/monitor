@@ -3,11 +3,11 @@ import { API_BASE_URL } from "@/lib/config";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import StatCard from "../../components/StatCard";
 import { Bar, Pie } from "react-chartjs-2";
 import {
   LucideServer,
   LucideWifi,
-  LucideActivity,
   LucideMenu,
   LucideX,
   LucidePcCase,
@@ -24,13 +24,13 @@ import "chart.js/auto";
 import { AddDeviceModal } from "@/components/AddDeviceModal";
 import { LogoutButton } from "@/components/Logout";
 import { LucideRefreshCcw } from "lucide-react";
-
 function formatSeconds(seconds: number): string {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
   return `${h}h ${m}m ${s}s`;
 }
+import { InternetSpeedCard } from "@/components/InternetSpeedCard";
 
 export interface Device {
   id: number;
@@ -49,21 +49,27 @@ export default function DashboardPage() {
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  // Sort devices by id
   const lastDevice = [...devices].sort((a, b) => b.id - a.id)[0];
+  // Sort devices by uptime
   const mostActiveDevice = devices.length
     ? devices.reduce((prev, curr) =>
-      (curr.uptime_seconds || 0) > (prev.uptime_seconds || 0) ? curr : prev
-    )
+        (curr.uptime_seconds || 0) > (prev.uptime_seconds || 0) ? curr : prev
+      )
     : null;
 
+  // Least Active Device
   const leastActiveDevice = devices.length
     ? devices.reduce((prev, curr) =>
-      (curr.uptime_seconds ?? Infinity) < (prev.uptime_seconds ?? Infinity)
-        ? curr
-        : prev
-    )
+        (curr.uptime_seconds ?? Infinity) < (prev.uptime_seconds ?? Infinity)
+          ? curr
+          : prev
+      )
     : null;
 
+  // Initial check to redirect if not authenticated
+  // This prevents a flash of unauthorized content before the user is loaded
   useEffect(() => {
     // Avoid premature redirect before user is loaded
     const auth = localStorage.getItem("auth");
@@ -73,11 +79,15 @@ export default function DashboardPage() {
     }
   }, [user?.token, router]);
 
+  // Ensure user is authenticated before proceeding
+  // This runs after the user is hydrated from localStorage
   useEffect(() => {
     if (user === null) return; // wait until user is hydrated
     if (!user?.token) router.replace("/login");
   }, [user?.token, user, router]);
 
+  // Fetch devices from the API
+  // This function is memoized to avoid unnecessary re-fetching
   const fetchDevices = useCallback(async () => {
     if (!user?.token) return;
 
@@ -98,6 +108,8 @@ export default function DashboardPage() {
     }
   }, [user?.token]);
 
+  // Fetch devices on mount and set up auto-refresh
+  // This runs every 3 seconds to keep the device list updated
   useEffect(() => {
     if (!user?.token) return;
 
@@ -108,6 +120,8 @@ export default function DashboardPage() {
     return () => clearInterval(interval); // cleanup
   }, [user?.token, fetchDevices]);
 
+  // Handle clicks outside the sidebar to close it
+  // This effect listens for mousedown events and closes the sidebar if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -129,29 +143,43 @@ export default function DashboardPage() {
     };
   }, [sidebarOpen]);
 
+  // Calculate stats
+  // These calculations are done once after devices are fetched
   const totalDevices = devices.length;
   const onlineDevices = devices.filter((d) => d.status === 1).length;
   const offlineDevices = totalDevices - onlineDevices;
 
-  const totalUptimeSeconds = devices.reduce(
-    (acc, d) => acc + (d.uptime_seconds || 0),
-    0
-  );
-  const avgUptimeSeconds = totalDevices
-    ? Math.floor(totalUptimeSeconds / totalDevices)
-    : 0;
+  // const totalUptimeSeconds = devices.reduce(
+  //   (acc, d) => acc + (d.uptime_seconds || 0),
+  //   0
+  // );
 
+  // const avgUptimeSeconds = totalDevices
+  //   ? Math.floor(totalUptimeSeconds / totalDevices)
+  //   : 0;
+
+  // Get top 5 devices by uptime
+  // This is done by sorting devices based on uptime_seconds and slicing the top 5
   const top5Devices = [...devices]
     .filter((d) => typeof d.uptime_seconds === "number")
     .sort((a, b) => (b.uptime_seconds ?? 0) - (a.uptime_seconds ?? 0))
     .slice(0, 5);
 
+  // Count devices per place
+  // This creates a record where keys are place names and values are counts of devices in each
   const devicesPerPlace = devices.reduce((acc: Record<string, number>, d) => {
     acc[d.place] = (acc[d.place] || 0) + 1;
     return acc;
   }, {});
 
   if (loading || !user) return null;
+
+  // Count devices per type
+  // This creates a record where keys are device types and values are counts of devices of each
+  const devicesPerType = devices.reduce((acc: Record<string, number>, d) => {
+    acc[d.type] = (acc[d.type] || 0) + 1;
+    return acc;
+  }, {});
 
   // Refetch devices function after adding a new device
   const refetchDevices = async () => {
@@ -174,7 +202,6 @@ export default function DashboardPage() {
   };
 
   return (
-
     <main className="relative min-h-screen w-full bg-black text-white overflow-hidden">
       {/* 🔹 Video Background */}
       <video
@@ -191,7 +218,11 @@ export default function DashboardPage() {
       {/* 🔹 Layout */}
       <div className="relative z-10 flex min-h-screen">
         <div ref={sidebarRef}>
-          <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} devices={devices} />
+          <Sidebar
+            open={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            devices={devices}
+          />
         </div>
         <div className="flex-1 px-4 py-6 sm:px-6 space-y-6">
           {/* 🔹 Topbar */}
@@ -208,6 +239,7 @@ export default function DashboardPage() {
               {/* Refresh Button */}
               <div
                 onClick={fetchDevices}
+                title="Refresh Devices"
                 className="p-2 rounded-md border border-green-500 hover:bg-green-900/20 transition hover:scale-105 active:scale-95 cursor-pointer"
               >
                 <LucideRefreshCcw className="w-5 h-5 text-green-400" />
@@ -220,6 +252,7 @@ export default function DashboardPage() {
                 className="p-2 border border-green-500 rounded-md hover:bg-green-900/20 transition cursor-pointer hover:scale-105 active:scale-95"
                 whileTap={{ scale: 0.9 }}
                 aria-label="Toggle Sidebar"
+                title="Menu"
               >
                 <AnimatePresence mode="wait">
                   {sidebarOpen ? (
@@ -245,7 +278,6 @@ export default function DashboardPage() {
                   )}
                 </AnimatePresence>
               </motion.button>
-
               {/* Logout Button */}
               <LogoutButton />
             </div>
@@ -272,10 +304,15 @@ export default function DashboardPage() {
               icon={<LucideWifi className="w-5 h-5 text-red-500" />}
             />
             <StatCard
-              title="Avg. Uptime"
-              value={formatSeconds(avgUptimeSeconds)}
-              icon={<LucideActivity className="w-5 h-5 text-purple-400" />}
-            />
+              title="Online Ratio"
+              icon={<LucidePercent className="w-5 h-5 text-blue-400" />}
+            >
+              <div className="text-2xl font-bold text-white pt-2">
+                {totalDevices > 0
+                  ? `${Math.round((onlineDevices / totalDevices) * 100)}%`
+                  : "N/A"}
+              </div>
+            </StatCard>
             <StatCard
               title="Last Created Device"
               icon={<LucidePcCase className="w-5 h-5 text-green-400" />}
@@ -299,8 +336,9 @@ export default function DashboardPage() {
                       <span className="font-semibold text-white">Status:</span>{" "}
                       <span className="inline-flex items-center gap-1">
                         <motion.span
-                          className={`w-2.5 h-2.5 rounded-full ${lastDevice.status ? "bg-green-400" : "bg-red-400"
-                            }`}
+                          className={`w-2.5 h-2.5 rounded-full ${
+                            lastDevice.status ? "bg-green-400" : "bg-red-400"
+                          }`}
                           animate={{
                             scale: [1, 1.4, 1],
                             opacity: [1, 0.6, 1],
@@ -352,10 +390,11 @@ export default function DashboardPage() {
                       <span className="font-semibold text-white">Status:</span>{" "}
                       <span className="inline-flex items-center gap-1">
                         <motion.span
-                          className={`w-2.5 h-2.5 rounded-full ${mostActiveDevice.status
-                            ? "bg-green-400"
-                            : "bg-red-400"
-                            }`}
+                          className={`w-2.5 h-2.5 rounded-full ${
+                            mostActiveDevice.status
+                              ? "bg-green-400"
+                              : "bg-red-400"
+                          }`}
                           animate={{
                             scale: [1, 1.4, 1],
                             opacity: [1, 0.6, 1],
@@ -384,6 +423,7 @@ export default function DashboardPage() {
                 </div>
               )}
             </StatCard>
+
             <StatCard
               title="Least Active Device"
               icon={<LucideTurtle className="w-5 h-5 text-yellow-400" />}
@@ -407,8 +447,11 @@ export default function DashboardPage() {
                       <span className="font-semibold text-white">Status:</span>{" "}
                       <span className="inline-flex items-center gap-1">
                         <motion.span
-                          className={`w-2.5 h-2.5 rounded-full ${leastActiveDevice.status ? "bg-green-400" : "bg-red-400"
-                            }`}
+                          className={`w-2.5 h-2.5 rounded-full ${
+                            leastActiveDevice.status
+                              ? "bg-green-400"
+                              : "bg-red-400"
+                          }`}
                           animate={{
                             scale: [1, 1.4, 1],
                             opacity: [1, 0.6, 1],
@@ -438,20 +481,11 @@ export default function DashboardPage() {
               )}
             </StatCard>
 
-            <StatCard
-              title="Online Ratio"
-              icon={<LucidePercent className="w-5 h-5 text-blue-400" />}
-            >
-              <div className="text-2xl font-bold text-white pt-2">
-                {totalDevices > 0
-                  ? `${Math.round((onlineDevices / totalDevices) * 100)}%`
-                  : "N/A"}
-              </div>
-            </StatCard>
+            <InternetSpeedCard />
           </div>
 
           {/* 🔹 Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card className="bg-[#111] border border-gray-700">
               <CardHeader>
                 <CardTitle className="text-lg text-white">
@@ -471,6 +505,34 @@ export default function DashboardPage() {
                           "#15803d",
                           "#166534",
                           "#14532d",
+                        ],
+                      },
+                    ],
+                  }}
+                  options={{ maintainAspectRatio: false }}
+                />
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[#111] border border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-lg text-white">
+                  Devices Per Type
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="w-full h-[280px]">
+                <Pie
+                  data={{
+                    labels: Object.keys(devicesPerType),
+                    datasets: [
+                      {
+                        data: Object.values(devicesPerType),
+                        backgroundColor: [
+                          "#2563eb",
+                          "#1d4ed8",
+                          "#1e40af",
+                          "#1e3a8a",
+                          "#1e3a8a",
                         ],
                       },
                     ],
@@ -526,34 +588,5 @@ export default function DashboardPage() {
         </div>
       </div>
     </main>
-  );
-}
-
-function StatCard({
-  title,
-  value,
-  icon,
-  children,
-}: {
-  title: string;
-  value?: string;
-  icon: React.ReactNode;
-  children?: React.ReactNode;
-}) {
-  return (
-    <Card className="bg-[#111] border border-gray-700 h-full">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm text-gray-300 font-medium">
-          {title}
-        </CardTitle>
-        {icon}
-      </CardHeader>
-      <CardContent>
-        {value && (
-          <div className="text-2xl font-bold text-green-400">{value}</div>
-        )}
-        {children}
-      </CardContent>
-    </Card>
   );
 }
