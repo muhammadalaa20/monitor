@@ -1,45 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  LucideRefreshCcw,
-  LucideWifi,
-} from "lucide-react";
+import { useEffect } from "react";
+import { useInternetSpeed } from "@/hooks/useInternetSpeed";
+import { LucideRefreshCcw, LucideWifi } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function InternetSpeedCard() {
-  const [speed, setSpeed] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const checkSpeed = () => {
-    const imageUrl =
-      "https://upload.wikimedia.org/wikipedia/commons/3/3e/Tokyo_Sky_Tree_2012.JPG";
-    const imageSizeBytes = 8185374;
-    const startTime = new Date().getTime();
-    const download = new Image();
-
-    setLoading(true);
-    download.src = imageUrl + "?cacheBuster=" + startTime;
-
-    download.onload = () => {
-      const endTime = new Date().getTime();
-      const duration = (endTime - startTime) / 1000;
-      const bitsLoaded = imageSizeBytes * 8;
-      const speedMbps = bitsLoaded / duration / 1024 / 1024;
-
-      setSpeed(Number(speedMbps.toFixed(2)));
-      setLoading(false);
-    };
-
-    download.onerror = () => {
-      setSpeed(null);
-      setLoading(false);
-    };
-  };
+  const { speed, loading, checkSpeed } = useInternetSpeed();
 
   useEffect(() => {
     checkSpeed();
-  }, []);
+  }, [checkSpeed]);
 
   const getStatusTheme = () => {
     if (loading) {
@@ -71,9 +42,13 @@ export function InternetSpeedCard() {
   const theme = getStatusTheme();
 
   return (
-    <Card className={`${theme.bg} border ${theme.border} rounded-xl shadow-lg w-full transition-colors duration-500`}>
+    <Card
+      className={`${theme.bg} border ${theme.border} rounded-xl shadow-lg w-full transition-colors duration-500`}
+    >
       <CardHeader className="flex items-center justify-between px-6">
-        <CardTitle className={`text-sm ${theme.text} font-semibold tracking-wide ${theme.glow}`}>
+        <CardTitle
+          className={`text-sm ${theme.text} font-semibold tracking-wide ${theme.glow}`}
+        >
           Internet Speed
         </CardTitle>
 
@@ -83,9 +58,13 @@ export function InternetSpeedCard() {
           title="Check Again"
           className={`${theme.text} relative`}
         >
-          <LucideRefreshCcw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+          <LucideRefreshCcw
+            className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+          />
           {loading && (
-            <div className={`absolute inset-0 rounded-full border ${theme.text} animate-ping opacity-30`} />
+            <div
+              className={`absolute inset-0 rounded-full border ${theme.text} animate-ping opacity-30`}
+            />
           )}
         </button>
       </CardHeader>
@@ -95,11 +74,7 @@ export function InternetSpeedCard() {
           key={speed ?? "loading"}
           className={`text-4xl font-extrabold tracking-tight ${theme.text} ${theme.glow}`}
         >
-          {loading ? (
-            <span className="animate-pulse">...</span>
-          ) : (
-            speed ?? "0"
-          )}
+          {loading ? <span className="animate-pulse">...</span> : speed ?? "0"}
         </div>
         <div className={`${theme.text} text-xs tracking-widest`}>Mbps</div>
 
