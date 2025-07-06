@@ -37,6 +37,29 @@ export function getDb() {
         user_id INTEGER NOT NULL,
         FOREIGN KEY(user_id) REFERENCES users(id)
       );
+
+      CREATE TABLE IF NOT EXISTS specs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  device_id INTEGER,
+  os TEXT,
+  cpu TEXT,
+  ram TEXT,
+  hostname TEXT,
+  manufacturer TEXT,
+  model TEXT,
+  serial_number TEXT,
+  last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (device_id) REFERENCES devices(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS specs_retry_queue (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  device_id INTEGER NOT NULL,
+  attempts INTEGER DEFAULT 0,
+  next_retry_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+  last_error TEXT,
+  FOREIGN KEY (device_id) REFERENCES devices(id) ON DELETE CASCADE
+);
     `);
 
     console.log('✅ SQLite ready with WAL mode.');

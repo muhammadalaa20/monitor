@@ -6,10 +6,13 @@ import {
   getDevicesByPlace,
   createDevice,
   updateDevice,
-  deleteDevice
-} from '../models/deviceModel.js';
-
-import { getDb } from '../db/index.js';
+  deleteDevice,
+} from "../models/deviceModel.js";
+import { execSync } from "child_process";
+import { parseSystemInfo } from "../helpers/parseSystemInfo.js";
+import { insertSpecs } from "../models/specsModel.js";
+import { isHostOnline } from '../helpers/pingHost.js';
+import { getDb } from "../db/index.js";
 
 export function fetchDevices(req, res) {
   try {
@@ -17,7 +20,7 @@ export function fetchDevices(req, res) {
     const devices = getAllDevices(db);
     res.json(devices);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch devices.' });
+    res.status(500).json({ error: "Failed to fetch devices." });
   }
 }
 
@@ -25,10 +28,10 @@ export function fetchDeviceById(req, res) {
   try {
     const db = getDb();
     const device = getDeviceById(db, req.params.id);
-    if (!device) return res.status(404).json({ error: 'Device not found.' });
+    if (!device) return res.status(404).json({ error: "Device not found." });
     res.json(device);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch device.' });
+    res.status(500).json({ error: "Failed to fetch device." });
   }
 }
 
@@ -38,7 +41,7 @@ export function fetchDevicesByPlace(req, res) {
     const devices = getDevicesByPlace(db, req.params.place);
     res.json(devices);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch devices by place.' });
+    res.status(500).json({ error: "Failed to fetch devices by place." });
   }
 }
 
@@ -62,7 +65,9 @@ export function addDevice(req, res) {
     } = req.body;
 
     if (!name || !ip || !last_seen) {
-      return res.status(400).json({ error: "Missing required fields (name, ip, last_seen)" });
+      return res
+        .status(400)
+        .json({ error: "Missing required fields (name, ip, last_seen)" });
     }
 
     const deviceData = {
@@ -78,8 +83,15 @@ export function addDevice(req, res) {
     };
 
     const device = createDevice(db, deviceData);
+    try {
+      const cmd = `systeminfo /s ${ip}`;
+      const output = execSync(cmd, { encoding: "utf8" });
+      const parsed = parseSystemInfo(output);
+      insertSpecs(db, { ...parsed, device_id: device.id });
+    } catch (error) {
+      console.error("Failed to fetch specs for device:", error.message);
+    }
     res.status(201).json(device);
-
   } catch (err) {
     console.error("Add Device Error:", err);
     res.status(500).json({ error: "Internal Server Error: " + err.message });
@@ -92,7 +104,7 @@ export function editDevice(req, res) {
     const device = updateDevice(db, req.params.id, req.body);
     res.json(device);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update device.' });
+    res.status(500).json({ error: "Failed to update device." });
   }
 }
 
@@ -101,10 +113,10 @@ export function removeDevice(req, res) {
     const db = getDb();
     const result = deleteDevice(db, req.params.id, req.user.id);
     if (!result || result.changes === 0) {
-      return res.status(404).json({ error: 'Device not found.' });
+      return res.status(404).json({ error: "Device not found." });
     }
-    res.json({ message: 'Device deleted.' });
+    res.json({ message: "Device deleted." });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to delete device.' });
+    res.status(500).json({ error: "Failed to delete device." });
   }
 }

@@ -1,5 +1,5 @@
 
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc1MTM3MDQ5NiwiZXhwIjoxNzUxNjI5Njk2fQ.Nz6cE6bOsDHyDxkuUb5BPfTropMi1DcwQpBTA1YMe4k
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc1MTc5NTMyMywiZXhwIjoxNzUyMDU0NTIzfQ._w-wn65gnuAZXxrTQTXur3S4M0Jkn20G-RBWi2se03M
 
 ### 📌 Register New User
 POST http://localhost:5000/api/auth/register
@@ -30,13 +30,13 @@ Content-Type: application/json
 Authorization: {{token}}
 
     {
-    "name": "AP-52-C10",
-    "ip": "172.17.10.52",
-    "type": "Access Point",
+    "name": "Awis's PC",
+    "ip": "172.17.20.35",
+    "type": "PC",
     "status": 1,
-    "description": "Access Point on Crane 10",
+    "description": "Awis's PC",
     "last_seen": "2025-06-28T11:35:00Z",
-    "place": "Crane 10",
+    "place": "Gate Management",
     "user_id": 1
     }
 
@@ -68,5 +68,11 @@ Content-Type: application/json
 
 ### DELETE A DEVICE 
 
-DELETE http://localhost:5000/api/devices/16
+DELETE http://localhost:5000/api/devices/2
 Authorization: {{token}}
+
+
+### GET SPECS
+GET http://localhost:5000/api/specs/1
+Authorization: Bearer {{token}}
+

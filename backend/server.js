@@ -5,6 +5,7 @@ import { getDb } from './db/index.js'; // use the new getter
 import authRoutes from './routes/authRoutes.js';
 import deviceRoutes from './routes/deviceRoutes.js';
 import { startPingScheduler } from './utils/pingScheduler.js';
+import specsRoutes from './routes/specsRoutes.js';
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 // Mount routes
 app.use('/api/auth', authRoutes);
 app.use('/api/devices', deviceRoutes);
+app.use('/api/specs', specsRoutes);
 
 // Trigger DB initialization by calling the getter
 getDb(); // ensure the DB connection and tables are initialized
