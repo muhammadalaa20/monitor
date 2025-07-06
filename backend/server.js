@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.js';
 import deviceRoutes from './routes/deviceRoutes.js';
 import { startPingScheduler } from './utils/pingScheduler.js';
 import specsRoutes from './routes/specsRoutes.js';
+import { runSpecsRetryJob } from './jobs/specsRetryJob.js';
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/devices', deviceRoutes);
 app.use('/api/specs', specsRoutes);
 
+// Schedule the specs retry job to run every minute
+runSpecsRetryJob();
+setInterval(runSpecsRetryJob, 60 * 1000); // every minute
 // Trigger DB initialization by calling the getter
 getDb(); // ensure the DB connection and tables are initialized
 

@@ -25,6 +25,25 @@ export function insertSpecs(db, specsData) {
   );
 }
 
+export function saveSpecs(db, deviceId, specs) {
+  const stmt = db.prepare(`
+    INSERT INTO specs (device_id, os, cpu, ram, hostname, manufacturer, model, serial_number)
+    VALUES (@device_id, @os, @cpu, @ram, @hostname, @manufacturer, @model, @serial_number)
+  `);
+
+  stmt.run({
+    device_id: deviceId,
+    os: specs.os || null,
+    cpu: specs.cpu || null,
+    ram: specs.ram || null,
+    hostname: specs.hostname || null,
+    manufacturer: specs.manufacturer || null,
+    model: specs.model || null,
+    serial_number: specs.serial_number || null,
+  });
+}
+
+
 export function getSpecsByDeviceId(db, device_id) {
   return db.prepare(`SELECT * FROM specs WHERE device_id = ?`).get(device_id);
 }

@@ -9,9 +9,9 @@ import {
   deleteDevice,
 } from "../models/deviceModel.js";
 import { execSync } from "child_process";
+import { execAsync } from "../utils/execAsync.js";
 import { parseSystemInfo } from "../helpers/parseSystemInfo.js";
-import { insertSpecs } from "../models/specsModel.js";
-import { isHostOnline } from '../helpers/pingHost.js';
+import { saveSpecs } from "../models/specsModel.js";
 import { getDb } from "../db/index.js";
 
 export function fetchDevices(req, res) {
@@ -45,7 +45,7 @@ export function fetchDevicesByPlace(req, res) {
   }
 }
 
-export function addDevice(req, res) {
+export async function addDevice(req, res) {
   try {
     const db = getDb();
 
@@ -83,13 +83,23 @@ export function addDevice(req, res) {
     };
 
     const device = createDevice(db, deviceData);
+    // Start system info collection
     try {
-      const cmd = `systeminfo /s ${ip}`;
-      const output = execSync(cmd, { encoding: "utf8" });
-      const parsed = parseSystemInfo(output);
-      insertSpecs(db, { ...parsed, device_id: device.id });
-    } catch (error) {
-      console.error("Failed to fetch specs for device:", error.message);
+      const { stdout } = await execAsync(`systeminfo /s ${ip}`);
+      const parsedSpecs = parseSystemInfo(stdout);
+      saveSpecs(db, device.id, parsedSpecs);
+    } catch (err) {
+      console.warn(
+        `System info collection failed for device ${ip}:`,
+        err.message
+      );
+
+      db.prepare(
+        `
+    INSERT INTO specs_retry_queue (device_id, attempts, next_retry_time, last_error)
+    VALUES (?, ?, DATETIME('now', '+5 minutes'), ?)
+  `
+      ).run(device.id, 1, err.message);
     }
     res.status(201).json(device);
   } catch (err) {
