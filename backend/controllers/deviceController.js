@@ -82,7 +82,8 @@ export async function addDevice(req, res) {
       user_id: req.user.id,
     };
 
-    const device = createDevice(db, deviceData);
+    const device = createDevice(db, deviceData);    
+    res.status(201).json(device);
     // Start system info collection
     try {
       const { stdout } = await execAsync(`systeminfo /s ${ip}`);
@@ -101,7 +102,7 @@ export async function addDevice(req, res) {
   `
       ).run(device.id, 1, err.message);
     }
-    res.status(201).json(device);
+
   } catch (err) {
     console.error("Add Device Error:", err);
     res.status(500).json({ error: "Internal Server Error: " + err.message });
