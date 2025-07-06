@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import AlertBell from "./AlertBell";
 import { motion, AnimatePresence } from "framer-motion";
+import AlertOnline from "./AlertOnline";
 import {
   ChevronDown,
   ChevronRight,
@@ -126,6 +127,7 @@ export function Sidebar({ open, onClose, devices }: SidebarProps) {
                       )}
                       {device.name}
                     </Link>
+                    <AlertOnline deviceId={device.id} />
                     <AlertBell deviceId={device.id} />
                   </li>
                 ))}

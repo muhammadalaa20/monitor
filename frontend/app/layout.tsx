@@ -1,15 +1,17 @@
 // app/layout.tsx
-'use client';
+"use client";
 import { useEffect } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
-import { AuthProvider } from '@/context/AuthContext';
-import { Toaster } from "@/components/ui/sonner"
+import { AuthProvider } from "@/context/AuthContext";
+import { Toaster } from "@/components/ui/sonner";
 import { DeviceAlertProvider } from "@/context/DeviceAlertContext";
+import { OnlineAlertProvider } from "@/context/OnlineAlertContext";
 import { initAlertSound } from "@/lib/alerts";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -44,16 +46,23 @@ export default function RootLayout({
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Device Monitor</title>
-        <meta name="description" content="Monitor device statuses in real time" />
+        <meta
+          name="description"
+          content="Monitor device statuses in real time"
+        />
         <link rel="icon" href="/logo.svg" type="image/svg+xml" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground scroll-smooth`} suppressHydrationWarning>
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground scroll-smooth`}
+        suppressHydrationWarning
+      >
         <PageTransitionWrapper>
           <AuthProvider>
             <DeviceAlertProvider>
-              {children}
-              <Toaster position="bottom-right" duration={3000} />
+              <OnlineAlertProvider>
+                {children}
+                <Toaster position="bottom-right" duration={3000} />
+              </OnlineAlertProvider>
             </DeviceAlertProvider>
           </AuthProvider>
         </PageTransitionWrapper>

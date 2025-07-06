@@ -12,30 +12,30 @@ type DeviceInfo = {
 };
 type DeviceMap = Record<number, DeviceInfo>;
 
-type AlertState = Record<number, boolean>; // deviceId => enabled
+type OnlineState = Record<number, boolean>; // deviceId => enabled
 
-const DeviceAlertContext = createContext<{
-  alertState: AlertState;
-  toggleAlert: (deviceId: number) => void;
-}>({ alertState: {}, toggleAlert: () => { } });
+const OnlineAlertContext = createContext<{
+  onlineState: OnlineState;
+  toggleOnline: (deviceId: number) => void;
+}>({ onlineState: {}, toggleOnline: () => { } });
 
-export function useDeviceAlertContext() {
-  return useContext(DeviceAlertContext);
+export function useOnlineAlertContext() {
+  return useContext(OnlineAlertContext);
 }
 
-export const DeviceAlertProvider = ({ children }: { children: React.ReactNode }) => {
-  const [alertState, setAlertState] = useState<AlertState>(() => {
+export const OnlineAlertProvider = ({ children }: { children: React.ReactNode }) => {
+  const [onlineState, setOnlineState] = useState<OnlineState>(() => {
     if (typeof window === "undefined") return {};
-    const saved = localStorage.getItem("Offline-alert-state");
+    const saved = localStorage.getItem("global-alert-state");
     return saved ? JSON.parse(saved) : {};
   });
   const { user } = useAuth();
   const [devices, setDevices] = useState<DeviceMap>({});
 
-  const toggleAlert = (id: number) => {
-    setAlertState((prev) => {
+  const toggleOnline = (id: number) => {
+    setOnlineState((prev) => {
       const updated = { ...prev, [id]: !prev[id] };
-      localStorage.setItem("Offline-alert-state", JSON.stringify(updated));
+      localStorage.setItem("global-alert-state", JSON.stringify(updated));
       return updated;
     });
   };
@@ -78,15 +78,15 @@ export const DeviceAlertProvider = ({ children }: { children: React.ReactNode })
   // Repeating alert loop
   useEffect(() => {
     const interval = setInterval(() => {
-      Object.entries(alertState).forEach(([idStr, enabled]) => {
+      Object.entries(onlineState).forEach(([idStr, enabled]) => {
         const id = parseInt(idStr);
         const device = devices[id];
-        if (enabled && device && !device.status) {
-          toast.error(`${device.name} is offline`,
+        if (enabled && device && device.status) {
+          toast.success(`${device.name} is Online`,
             {
-              className: "bg-red-900 text-white border border-red-500",
+              className: "bg-green-900 text-white border border-green-500",
               dismissible: true,
-              icon: "🔴",
+              icon: "🟢",
             }
           );
           playAlertSound();
@@ -94,11 +94,11 @@ export const DeviceAlertProvider = ({ children }: { children: React.ReactNode })
       });
     }, 5000);
     return () => clearInterval(interval);
-  }, [alertState, devices]);
+  }, [onlineState, devices]);
 
   return (
-    <DeviceAlertContext.Provider value={{ alertState, toggleAlert }}>
+    <OnlineAlertContext.Provider value={{ onlineState, toggleOnline }}>
       {children}
-    </DeviceAlertContext.Provider>
+    </OnlineAlertContext.Provider>
   );
 };
