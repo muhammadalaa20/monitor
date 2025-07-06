@@ -73,6 +73,6 @@ Authorization: {{token}}
 
 
 ### GET SPECS
-GET http://localhost:5000/api/specs/9
+GET http://localhost:5000/api/specs/11
 Authorization: Bearer {{token}}
 

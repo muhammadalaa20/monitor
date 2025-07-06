@@ -43,7 +43,7 @@ export default function HomePage() {
             muted
             loop
             playsInline
-            className="absolute inset-0 w-full h-full object-cover brightness-[0.5]"
+            className="absolute inset-0 w-full h-full object-cover brightness-[0.3]"
           >
             <source src="/hero1.mp4" type="video/mp4" />
           </video>
@@ -98,7 +98,7 @@ export default function HomePage() {
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover brightness-[0.5] z-0"
+          className="absolute inset-0 w-full h-full object-cover brightness-[0.3] z-0"
         >
           <source src="/hero1.mp4" type="video/mp4" />
         </video>
