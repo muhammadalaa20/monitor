@@ -73,11 +73,11 @@ Authorization: {{token}}
 
 
 ### GET SPECS
-GET http://localhost:5000/api/specs/9
+GET http://localhost:5000/api/specs/11
 Authorization: Bearer {{token}}
 
 ### Collect Device Logs for a Device (Windows only)
-POST http://localhost:5000/api/devicelogs/9
+POST http://localhost:5000/api/devicelogs/11
 Authorization: Bearer {{token}}
 
 ### Get All Logs (for debugging)
@@ -85,5 +85,5 @@ GET http://localhost:5000/api/devicelogs
 Authorization: Bearer {{token}}
 
 ### Get All Logs for a Device
-GET http://localhost:5000/api/devicelogs/9
+GET http://localhost:5000/api/devicelogs/11
 Authorization: Bearer {{token}}

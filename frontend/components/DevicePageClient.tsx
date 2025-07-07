@@ -8,6 +8,7 @@ import Link from "next/link";
 import { EditDeviceModal } from "@/components/EditDeviceModal";
 import { DeleteDeviceModal } from "@/components/DeleteDeviceModal";
 import { useRouter } from "next/navigation";
+import { ActiveUserSession } from "./ActiveUserSession";
 interface Device {
   id: number;
   name: string;
@@ -208,7 +209,13 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
               </div>
             </Link>
           </div>
+
           <div className="flex items-center gap-2">
+            <ActiveUserSession
+              deviceId={device.id}
+              isOnline={!!device.status}
+              token={user?.token || ""}
+            />
             <EditDeviceModal
               device={device}
               onUpdated={() => window.location.reload()}
@@ -219,7 +226,6 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
             />
           </div>
         </div>
-
         {/* Device Info Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 p-8 w-full">
           <Card className="bg-[#111] border border-green-600 w-full hover:bg-gradient-to-r from-green-700/30 to-green-900/20">
@@ -264,9 +270,8 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
                 <div className="flex items-center justify-between">
                   <h1>Status</h1>
                   <LucideWifi
-                    className={`h-5 w-5 ${
-                      device.status ? "text-green-400" : "text-red-400"
-                    }`}
+                    className={`h-5 w-5 ${device.status ? "text-green-400" : "text-red-400"
+                      }`}
                   />
                 </div>
               </CardTitle>
@@ -274,9 +279,8 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
             <CardContent className="text-white">
               <span className="inline-flex items-center gap-1">
                 <motion.span
-                  className={`w-2.5 h-2.5 rounded-full ${
-                    device.status ? "bg-green-400" : "bg-red-400"
-                  }`}
+                  className={`w-2.5 h-2.5 rounded-full ${device.status ? "bg-green-400" : "bg-red-400"
+                    }`}
                   animate={{
                     scale: [1, 1.4, 1],
                     opacity: [1, 0.6, 1],
@@ -401,19 +405,17 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
               {relatedDevices.map((d) => (
                 <Link key={d.id} href={`/device/${d.id}`}>
                   <Card
-                    className={`min-h-[150px] flex flex-col justify-between transition-all hover:scale-105 cursor-pointer ${
-                      d.status
-                        ? "bg-[#111] border border-green-600 hover:bg-green-800/10"
-                        : "bg-[#1a0000] border border-red-600 hover:bg-red-800/10"
-                    }`}
+                    className={`min-h-[150px] flex flex-col justify-between transition-all hover:scale-105 cursor-pointer ${d.status
+                      ? "bg-[#111] border border-green-600 hover:bg-green-800/10"
+                      : "bg-[#1a0000] border border-red-600 hover:bg-red-800/10"
+                      }`}
                   >
                     <CardHeader>
                       <CardTitle className="text-green-400 text-md flex justify-between items-center">
                         {d.name}
                         <motion.span
-                          className={`w-2 h-2 rounded-full ${
-                            d.status ? "bg-green-400" : "bg-red-400"
-                          }`}
+                          className={`w-2 h-2 rounded-full ${d.status ? "bg-green-400" : "bg-red-400"
+                            }`}
                           animate={{
                             scale: [1, 1.4, 1],
                             opacity: [1, 0.7, 1],
