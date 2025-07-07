@@ -19,6 +19,17 @@ interface Device {
   place: string;
   uptime_seconds: number;
 }
+interface Specs {
+  id: number;
+  device_id: number;
+  os: string;
+  hostname: string;
+  manufacturer: string;
+  model: string;
+  ram: string;
+  cpu: string;
+}
+
 import {
   LucideArrowLeft,
   LucideCpu,
@@ -29,6 +40,10 @@ import {
   LucideHome,
   LucideTimer,
   LucideInfo,
+  Laptop,
+  Factory,
+  MemoryStick,
+  ServerCog
 } from "lucide-react";
 
 function formatUptime(seconds: number) {
@@ -44,6 +59,7 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [relatedDevices, setRelatedDevices] = useState<Device[]>([]);
   const router = useRouter();
+  const [specs, setSpecs] = useState<Specs | null>(null);
 
   useEffect(() => {
     // Avoid premature redirect before user is loaded
@@ -71,15 +87,12 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
       try {
         console.log("🔐 Using token:", user.token);
 
-        const res = await fetch(
-          `${API_BASE_URL}/api/devices/${deviceId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const res = await fetch(`${API_BASE_URL}/api/devices/${deviceId}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         if (!res.ok) {
           const text = await res.text();
@@ -97,6 +110,33 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
     fetchDevice();
     const interval = setInterval(fetchDevice, 1000);
     return () => clearInterval(interval);
+  }, [deviceId, user?.token]);
+
+  // Fetch device specs
+  useEffect(() => {
+    if (!user?.token || !deviceId) return;
+
+    const fetchSpecs = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/specs/${deviceId}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        if (!res.ok) {
+          return;
+        }
+
+        const data = await res.json();
+        setSpecs(data);
+        console.log("Fetched specs:", data);
+      } catch (err) {
+        console.error("Error fetching specs:", err);
+      }
+    };
+
+    fetchSpecs();
   }, [deviceId, user?.token]);
 
   useEffect(() => {
@@ -187,11 +227,11 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
               <CardTitle className="text-lg text-green-400">
                 <div className="flex items-center justify-between">
                   <h1>Device Name</h1>
-                  <LucideCpu className="h-5 w-5 text-green-400" />
+                  <Laptop className="h-5 w-5 text-green-400" />
                 </div>
               </CardTitle>
             </CardHeader>
-            <CardContent className="text-white">{device.name}</CardContent>
+            <CardContent className="text-white">{specs?.hostname || device.name}</CardContent>
           </Card>
 
           <Card className="bg-[#111] border border-green-600 w-full hover:bg-gradient-to-r from-green-700/30 to-green-900/20">
@@ -306,6 +346,51 @@ export default function DevicePageClient({ deviceId }: { deviceId: string }) {
               {device.description}
             </CardContent>
           </Card>
+          {specs && (
+            <>
+              <Card className="bg-[#111] border border-green-600 w-full hover:bg-gradient-to-r from-green-700/30 to-green-900/20">
+                <CardHeader>
+                  <CardTitle className="text-lg text-green-400 flex justify-between">
+                    <span>OS</span>
+                    <LucideCpu className="h-5 w-5 text-indigo-400" />
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-white">{specs.os}</CardContent>
+              </Card>
+
+              <Card className="bg-[#111] border border-green-600 w-full hover:bg-gradient-to-r from-green-700/30 to-green-900/20">
+                <CardHeader>
+                  <CardTitle className="text-lg text-green-400 flex justify-between">
+                    <span>RAM</span>
+                    <MemoryStick className="h-5 w-5 text-sky-400" />
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-white">{specs.ram}</CardContent>
+              </Card>
+
+              <Card className="bg-[#111] border border-green-600 w-full hover:bg-gradient-to-r from-green-700/30 to-green-900/20">
+                <CardHeader>
+                  <CardTitle className="text-lg text-green-400 flex justify-between">
+                    <span>Manufacturer</span>
+                    <Factory className="h-5 w-5 text-pink-400" />
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-white">
+                  {specs.manufacturer}
+                </CardContent>
+              </Card>
+
+              <Card className="bg-[#111] border border-green-600 w-full hover:bg-gradient-to-r from-green-700/30 to-green-900/20">
+                <CardHeader>
+                  <CardTitle className="text-lg text-green-400 flex justify-between">
+                    <span>Model</span>
+                    <ServerCog className="h-5 w-5 text-fuchsia-400" />
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-white">{specs.model}</CardContent>
+              </Card>
+            </>
+          )}
         </div>
         {relatedDevices.length > 0 && (
           <div className="w-full px-8 mt-4">
