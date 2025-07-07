@@ -60,6 +60,19 @@ CREATE TABLE IF NOT EXISTS specs_retry_queue (
   last_error TEXT,
   FOREIGN KEY (device_id) REFERENCES devices(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS devicelogs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  device_id INTEGER,
+  username TEXT,
+  session_name TEXT,
+  state TEXT,
+  idle_time TEXT,
+  logon_time TEXT,
+  collected_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (device_id) REFERENCES devices(id)
+);
+
     `);
 
     console.log('✅ SQLite ready with WAL mode.');
