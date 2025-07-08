@@ -85,5 +85,5 @@ GET http://localhost:5000/api/devicelogs
 Authorization: Bearer {{token}}
 
 ### Get All Logs for a Device
-GET http://localhost:5000/api/devicelogs/11
+GET http://localhost:5000/api/devicelogs/13
 Authorization: Bearer {{token}}
