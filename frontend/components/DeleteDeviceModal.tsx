@@ -41,6 +41,7 @@ export function DeleteDeviceModal({ deviceId, onDeleted }: DeleteDeviceModalProp
       toast.success("Device deleted.");
       onDeleted?.();
       setOpen(false);
+      console.log(res);
     } catch (err) {
       toast.error("Error deleting device." + (err instanceof Error ? `: ${err.message}` : ""));
     } finally {

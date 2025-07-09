@@ -8,9 +8,10 @@ function getDuration(logonTime: string): string {
   if (!logonTime) return "Invalid logon time";
 
   // Parse using the exact format
-  const parsed = DateTime.fromFormat(logonTime, "dd-MM-yyyy h:mm a", {
+  const parsed = DateTime.fromFormat(logonTime, "M/d/yyyy h:mm a", {
     zone: "local",
   });
+
 
   if (!parsed.isValid) {
     console.error("Invalid date:", parsed.invalidExplanation);

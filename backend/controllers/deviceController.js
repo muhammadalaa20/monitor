@@ -122,12 +122,30 @@ export function editDevice(req, res) {
 export function removeDevice(req, res) {
   try {
     const db = getDb();
-    const result = deleteDevice(db, req.params.id, req.user.id);
-    if (!result || result.changes === 0) {
-      return res.status(404).json({ error: "Device not found." });
+
+    const deviceId = Number(req.params.id);
+    const userId = req.user?.id;
+
+    console.log("Attempting to delete device:", deviceId, "for user:", userId);
+
+    if (!deviceId || !userId) {
+      console.warn("Missing deviceId or userId.");
+      return res.status(400).json({ error: "Missing device ID or user ID." });
     }
+
+    const result = deleteDevice(db, deviceId, userId);
+
+    console.log("Delete result:", result);
+
+    if (!result || result.changes === 0) {
+      return res.status(404).json({ error: "Device not found or not owned by user." });
+    }
+
     res.json({ message: "Device deleted." });
+
   } catch (err) {
+    console.error("❌ Error deleting device:", err.message, err.stack);
     res.status(500).json({ error: "Failed to delete device." });
   }
 }
+

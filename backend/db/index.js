@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS devicelogs (
   idle_time TEXT,
   logon_time TEXT,
   collected_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (device_id) REFERENCES devices(id)
+  FOREIGN KEY (device_id) REFERENCES devices(id) ON DELETE CASCADE
 );
 
     `);
