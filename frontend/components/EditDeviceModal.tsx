@@ -52,24 +52,21 @@ export function EditDeviceModal({ device, onUpdated }: EditDeviceModalProps) {
   const handleUpdateDevice = async () => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/devices/${device.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user?.token}`,
-          },
-          body: JSON.stringify({
-            ...device,
-            name,
-            ip,
-            type,
-            place,
-            description,
-          }),
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/devices/${device.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+        body: JSON.stringify({
+          ...device,
+          name,
+          ip,
+          type,
+          place,
+          description,
+        }),
+      });
 
       if (!res.ok) throw new Error("Failed to update device");
 
@@ -155,6 +152,10 @@ export function EditDeviceModal({ device, onUpdated }: EditDeviceModalProps) {
                 Management Building
               </SelectItem>
               <SelectItem value="New Building">New Building</SelectItem>
+              <SelectItem value="Taasher">Taasher</SelectItem>
+              <SelectItem value="Casher">Casher</SelectItem>
+              <SelectItem value="Billing">Billing</SelectItem>
+              <SelectItem value="Revenue">Revenue</SelectItem>
               <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
           </Select>

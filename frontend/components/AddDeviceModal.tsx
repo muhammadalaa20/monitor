@@ -184,6 +184,9 @@ export function AddDeviceModal({ onDeviceAdded }: AddDeviceModalProps) {
                 <SelectItem value="Management Building">Management Building</SelectItem>
                 <SelectItem value="New Building">New Building</SelectItem>
                 <SelectItem value="Taasher">Taasher</SelectItem>
+                <SelectItem value="Casher">Casher</SelectItem>
+                <SelectItem value="Billing">Billing</SelectItem>
+                <SelectItem value="Revenue">Revenue</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
