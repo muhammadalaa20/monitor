@@ -1,5 +1,5 @@
 
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc1MTc5NjQ3MSwiZXhwIjoxNzUyMDU1NjcxfQ.6Mh6iHNqxjVKO-IkzmOdY764VItGsE41hGeflGFB1ps
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTc1MzAwNDA0NCwiZXhwIjoxNzUzMjYzMjQ0fQ.Tz5CfKVj3CTPo4jjim3GHMOnbdTux-z4rc2I5AGkvd0
 
 ### 📌 Register New User
 POST http://localhost:5000/api/auth/register
@@ -87,3 +87,29 @@ Authorization: Bearer {{token}}
 ### Get All Logs for a Device
 GET http://localhost:5000/api/devicelogs/13
 Authorization: Bearer {{token}}
+
+
+### Shutdown a Device
+POST http://localhost:5000/api/jobs/shutdown
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "ip": "172.17.20.3",
+  "action": "restart"
+}
+
+### Get all tasks from a device
+GET http://localhost:5000/api/jobs/tasklist?ip=172.17.20.3
+Authorization: Bearer {{token}}
+
+
+### Kill a task by PID on a remote device
+POST http://localhost:5000/api/jobs/taskkill
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "ip": "172.17.20.3",
+  "pid": 14036         
+}
